@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>👶 Baby Sanghvi Name Sanctuary</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #fff8f0 0%, #fef0f5 100%);
+      color: #333;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      text-align: center;
+      max-width: 640px;
+      margin: 0 auto 36px;
+      padding: 32px 24px;
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+    }
+    .hero h1 {
+      font-size: 1.9rem;
+      color: #c0392b;
+      margin-bottom: 6px;
+      line-height: 1.3;
+    }
+    .hero .tagline {
+      font-size: 1rem;
+      color: #888;
+      margin-bottom: 20px;
+      font-style: italic;
+    }
+    .hero .mission {
+      background: #fff8f0;
+      border-left: 4px solid #e74c3c;
+      border-radius: 8px;
+      padding: 14px 18px;
+      text-align: left;
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: #555;
+    }
+    .hero .mission p { margin-bottom: 4px; }
+    .hero .mission .cta {
+      margin-top: 12px;
+      font-weight: bold;
+      color: #c0392b;
+      font-size: 1rem;
+      font-style: normal;
+    }
+
+    /* ── FORM ── */
+    .form-card {
+      background: white;
+      border-radius: 16px;
+      padding: 28px;
+      max-width: 520px;
+      margin: 0 auto 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.09);
+    }
+    .form-card h2 {
+      font-size: 1.2rem;
+      color: #c0392b;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .field-group { margin-bottom: 18px; }
+    .field-group label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.95rem;
+      margin-bottom: 4px;
+      color: #444;
+    }
+    .field-group .hint {
+      font-size: 0.78rem;
+      color: #aaa;
+      margin-bottom: 6px;
+      font-style: italic;
+    }
+    input, textarea {
+      width: 100%;
+      padding: 11px 14px;
+      border: 1.5px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 0.97rem;
+      font-family: 'Segoe UI', sans-serif;
+      transition: border 0.2s;
+      background: #fafafa;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #e74c3c;
+      background: white;
+    }
+    textarea { resize: vertical; min-height: 80px; }
+
+    .submit-section { text-align: center; margin-top: 8px; }
+    .submit-section .submit-note {
+      font-size: 0.8rem;
+      color: #bbb;
+      margin-bottom: 10px;
+      font-style: italic;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 1.05rem;
+      cursor: pointer;
+      font-weight: bold;
+      letter-spacing: 0.3px;
+      transition: transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 3px 10px rgba(231,76,60,0.3);
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(231,76,60,0.4); }
+    button:active { transform: translateY(0); }
+
+    .msg {
+      text-align: center;
+      margin-top: 12px;
+      font-weight: bold;
+      font-size: 0.92rem;
+      min-height: 24px;
+      line-height: 1.5;
+    }
+    .success { color: #27ae60; }
+    .error { color: #e74c3c; }
+    .loading { color: #e67e22; animation: pulse 1s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+    /* ── STATS ── */
+    .stats-section {
+      max-width: 900px;
+      margin: 0 auto 24px;
+    }
+    .stats-title {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #bbb;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+    .stat-chip {
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    }
+
+    /* ── RASHI SECTIONS ── */
+    .rashi-section {
+      max-width: 900px;
+      margin: 0 auto 16px;
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
+    }
+    .rashi-title {
+      font-size: 1rem;
+      font-weight: bold;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f5f5f5;
+      color: #444;
+    }
+    .name-card {
+      display: inline-block;
+      margin: 5px;
+      border-radius: 12px;
+      overflow: hidden;
+      vertical-align: top;
+      max-width: 190px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .name-card .name-header {
+      padding: 7px 13px;
+      color: white;
+      font-weight: bold;
+      font-size: 0.97rem;
+    }
+    .name-card .name-meta {
+      padding: 6px 10px 8px;
+      background: #fafafa;
+      font-size: 0.75rem;
+      color: #555;
+    }
+    .name-card .name-meta .by { font-weight: 600; }
+    .name-card .name-meta .reason { font-style: italic; color: #777; margin-top: 3px; line-height: 1.4; }
+
+    .name-tag {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin: 4px;
+      font-size: 0.9rem;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+    .empty { color: #ccc; font-style: italic; font-size: 0.85rem; }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 0.8rem;
+      color: #ccc;
+      padding-bottom: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>👶✨ Baby Sanghvi Name Sanctuary ✨👶</h1>
+  <p class="tagline">Where legendary names are born. No pressure.</p>
+  <div class="mission">
+    <p>🎯 We're on a <strong>very serious mission:</strong></p>
+    <p>Finding a name that's <strong>cute at 3 months…</strong></p>
+    <p>cool at <strong>13…</strong></p>
+    <p>and powerful enough to <strong>run a company at 30. 💼</strong></p>
+    <p class="cta">Think you've got the one? Drop it below! 👇</p>
+  </div>
+</div>
+
+<!-- FORM -->
+<div class="form-card">
+  <h2>🧠 Name Wizard Details</h2>
+
+  <div class="field-group">
+    <label>Your Name</label>
+    <div class="hint">So we know who to blame if it's wild 😜</div>
+    <input type="text" id="userName" placeholder="e.g. Priya, Raj, Nana..." />
+  </div>
+
+  <div class="field-group">
+    <label>Your Brilliant Name Suggestion</label>
+    <div class="hint">CEO vibes? Bollywood star? Future Prime Minister? We're listening. 👑</div>
+    <input type="text" id="babyName" placeholder="e.g. Arjun, Aanya, Vivaan..." />
+  </div>
+
+  <div class="field-group">
+    <label>Why This Name? <span style="font-weight:400; color:#bbb;">(Optional)</span></label>
+    <div class="hint">Meaning, origin, numerology magic, family connection… or just "heard it in a reel and loved it." ✨</div>
+    <textarea id="nameReason" placeholder="Share the story behind the name..."></textarea>
+  </div>
+
+  <div class="submit-section">
+    <div class="submit-note">🚀 May the best name win eternal family fame.</div>
+    <button onclick="submitName()">Submit Your Masterpiece ✨</button>
+    <div class="msg" id="msg"></div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stats-title">🏆 Name Wizards Leaderboard</div>
+  <div class="stats" id="stats"></div>
+</div>
+
+<!-- RASHI GROUPS -->
+<div id="rashiContainer"></div>
+
+<!-- FOOTER -->
+<div class="footer">Made with 💕 for Baby Sanghvi · Names are forever, choose wisely 😄</div>
+
+<script>
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxHng7vyLaTr-RhnJUZMaXZSoXQvxV1o2jd7ksbTXKpr-96C6T62DHoiz-NnWBW9HuHeg/exec";
+
+const RASHI_MAP = [
+  { rashi: "Mesh (Aries ♈)", letters: ["A","E","I","O","L"] },
+  { rashi: "Vrishabha (Taurus ♉)", letters: ["B","V","U","W"] },
+  { rashi: "Mithun (Gemini ♊)", letters: ["K","C","Q","G"] },
+  { rashi: "Karka (Cancer ♋)", letters: ["H","D"] },
+  { rashi: "Simha (Leo ♌)", letters: ["M","T"] },
+  { rashi: "Kanya (Virgo ♍)", letters: ["P","N"] },
+  { rashi: "Tula (Libra ♎)", letters: ["R"] },
+  { rashi: "Vrishchik (Scorpio ♏)", letters: ["Y"] },
+  { rashi: "Dhanu (Sagittarius ♐)", letters: ["F","X"] },
+  { rashi: "Makar (Capricorn ♑)", letters: ["J"] },
+  { rashi: "Kumbh (Aquarius ♒)", letters: ["S"] },
+  { rashi: "Meen (Pisces ♓)", letters: ["Z"] },
+];
+
+const COLORS = ["#e74c3c","#3498db","#2ecc71","#9b59b6","#e67e22","#1abc9c","#e91e63","#ff9800","#607d8b","#795548"];
+const submitterColors = {};
+let colorIndex = 0;
+let localNames = [];
+
+const funnyMessages = [
+  "🕐 Asking the stars for approval...",
+  "🪐 Consulting Jupiter about this name...",
+  "📊 Running Anti-Bully Algorithm v2.0...",
+  "📜 Checking the ancient Gujarati scrolls...",
+  "🐘 Fiya is reviewing your suggestion...",
+  "📯 Blowing the shankh before confirmation...",
+  "🌙 Checking the nakshatra alignment...",
+  "🔮 The jyotishi is calculating...",
+  "✋ Taking elders’ aashirwad...",
+  "🌈 Checking if the name passes vibe check...",
+  "🪙 Tossing a lucky coin just in case...",
+  "⚡ Pikachu is dancing approvingly..."
+  "🎊 Preparing confetti made of rose petals..."
+  "🧪 Stress-testing the name against middle schoolers...",
+  "😅 Making sure it doesn’t rhyme with anything suspicious...",
+  "📣 Testing how it sounds when yelled across a playground...",
+  "📚 Running playground nickname simulation...",
+  "🍊 Checking if name sounds good at Navratri...",
+  "📖 Flipping through the Panchang...",
+  "🎯 Making sure cousins can’t weaponize it...",
+  "🎭 Testing dramatic mispronunciations...",
+  "👀 Checking for accidental meme potential...",
+];
+
+let msgInterval = null;
+
+function getColor(name) {
+  const key = name.trim().toLowerCase();
+  if (!submitterColors[key]) {
+    submitterColors[key] = COLORS[colorIndex % COLORS.length];
+    colorIndex++;
+  }
+  return submitterColors[key];
+}
+
+function getRashi(name) {
+  const firstLetter = name.trim()[0].toUpperCase();
+  for (let r of RASHI_MAP) {
+    if (r.letters.includes(firstLetter)) return r.rashi;
+  }
+  return "Other ❓";
+}
+
+function showFunnyMessages() {
+  const msg = document.getElementById("msg");
+  let i = Math.floor(Math.random() * funnyMessages.length);
+  msg.textContent = funnyMessages[i];
+  msg.className = "msg loading";
+  msgInterval = setInterval(() => {
+    i = (i + 1) % funnyMessages.length;
+    msg.textContent = funnyMessages[i];
+  }, 1800);
+}
+
+function stopFunnyMessages() {
+  if (msgInterval) { clearInterval(msgInterval); msgInterval = null; }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  document.getElementById("userName").addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("babyName").focus();
+  });
+  document.getElementById("babyName").addEventListener("keydown", e => {
+    if (e.key === "Enter") document.getElementById("nameReason").focus();
+  });
+  document.getElementById("nameReason").addEventListener("keydown", e => {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitName(); }
+  });
+});
+
+async function submitName() {
+  const userName = document.getElementById("userName").value.trim();
+  const babyName = document.getElementById("babyName").value.trim();
+  const nameReason = document.getElementById("nameReason").value.trim();
+  const msg = document.getElementById("msg");
+
+  if (!userName || !babyName) {
+    msg.textContent = "👆 We need at least your name and a baby name!";
+    msg.className = "msg error";
+    return;
+  }
+
+  const isDuplicate = localNames.some(n => n.name.toLowerCase() === babyName.toLowerCase());
+  if (isDuplicate) {
+    msg.textContent = `⚠️ "${babyName}" is already in the sanctuary! Try another.`;
+    msg.className = "msg error";
+    return;
+  }
+
+  // Show instantly in UI
+  localNames.push({ name: babyName, by: userName, reason: nameReason });
+  document.getElementById("babyName").value = "";
+  document.getElementById("nameReason").value = "";
+  renderNames();
+  showFunnyMessages();
+
+  // Save to sheet in background
+  const url = SHEET_URL
+    + "?submittedBy=" + encodeURIComponent(userName)
+    + "&name=" + encodeURIComponent(babyName)
+    + "&reason=" + encodeURIComponent(nameReason);
+
+  try {
+    await fetch(url);
+  } catch(e) {
+    setTimeout(() => fetch(url), 3000);
+  } finally {
+    stopFunnyMessages();
+    msg.textContent = `🎉 "${babyName}" has entered the Sanctuary! Got another one?`;
+    msg.className = "msg success";
+  }
+}
+
+function renderNames() {
+  const counts = {};
+  localNames.forEach(r => {
+    const by = r.by?.trim() || "Unknown";
+    getColor(by);
+    counts[by] = (counts[by] || 0) + 1;
+  });
+
+  document.getElementById("stats").innerHTML = Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, count], idx) => {
+      const medals = ["🥇","🥈","🥉"];
+      const badge = medals[idx] || "🏅";
+      return `<div class="stat-chip" style="background:${getColor(name)}">${badge} ${name}: ${count} name${count > 1 ? 's' : ''}</div>`;
+    }).join("");
+
+  const grouped = {};
+  RASHI_MAP.forEach(r => grouped[r.rashi] = []);
+  grouped["Other ❓"] = [];
+
+  localNames.forEach(r => {
+    const name = r.name?.trim();
+    const by = r.by?.trim() || "Unknown";
+    const reason = r.reason?.trim() || "";
+    if (!name) return;
+    const rashi = getRashi(name);
+    if (!grouped[rashi]) grouped[rashi] = [];
+    grouped[rashi].push({ name, by, reason });
+  });
+
+  document.getElementById("rashiContainer").innerHTML = [...RASHI_MAP.map(r => r.rashi), "Other ❓"].map(rashi => {
+    const names = (grouped[rashi] || []).sort((a, b) => a.name.localeCompare(b.name));
+    if (!names.length) return `
+      <div class="rashi-section">
+        <div class="rashi-title">⭐ ${rashi}</div>
+        <span class="empty">No names yet — be the first! 🌟</span>
+      </div>`;
+
+    const tags = names.map(n => {
+      const color = getColor(n.by);
+      if (n.reason) {
+        return `<div class="name-card">
+          <div class="name-header" style="background:${color}">${n.name}</div>
+          <div class="name-meta">
+            <div class="by">👤 ${n.by}</div>
+            <div class="reason">💬 ${n.reason}</div>
+          </div>
+        </div>`;
+      }
+      return `<span class="name-tag" style="background:${color}" title="Suggested by ${n.by}">${n.name}</span>`;
+    }).join("");
+
+    return `<div class="rashi-section"><div class="rashi-title">⭐ ${rashi}</div>${tags}</div>`;
+  }).join("");
+}
+
+async function loadNames() {
+  try {
+    const res = await fetch(SHEET_URL);
+    const raw = await res.json();
+    localNames = raw.slice(1)
+      .filter(r => r[2])
+      .map(r => ({
+        name: r[2]?.toString().trim(),
+        by: r[1]?.toString().trim() || "Unknown",
+        reason: r[3]?.toString().trim() || ""
+      }));
+    renderNames();
+  } catch(e) {
+    console.error("Load error:", e);
+  }
+}
+
+loadNames();
+setInterval(loadNames, 20000);
+</script>
+</body>
+</html>
