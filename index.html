@@ -370,17 +370,16 @@ function stopFunnyMessages() {
   if (msgInterval) { clearInterval(msgInterval); msgInterval = null; }
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("userName").addEventListener("keydown", e => {
-    if (e.key === "Enter") document.getElementById("babyName").focus();
-  });
-  document.getElementById("babyName").addEventListener("keydown", e => {
-    if (e.key === "Enter") document.getElementById("nameReason").focus();
-  });
-  document.getElementById("nameReason").addEventListener("keydown", e => {
-    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitName(); }
-  });
+document.getElementById("userName").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("babyName").focus();
 });
+document.getElementById("babyName").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("nameReason").focus();
+});
+document.getElementById("nameReason").addEventListener("keydown", e => {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitName(); }
+});
+
 
 async function submitName() {
   const userName = document.getElementById("userName").value.trim();
@@ -502,4 +501,5 @@ loadNames();
 setInterval(loadNames, 20000);
 </script>
 </body>
+
 </html>
