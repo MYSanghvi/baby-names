@@ -286,24 +286,24 @@
 <div id="rashiContainer"></div>
 
 <!-- FOOTER -->
-<div class="footer">Made with 💕 for Baby Sanghvi · Names are forever, choose wisely 😄</div>
+<div class="footer">Made with 💕 for Baby Sanghvi · Names are forever, choose wisely!</div>
 
 <script>
 const SHEET_URL = "https://script.google.com/macros/s/AKfycbxHng7vyLaTr-RhnJUZMaXZSoXQvxV1o2jd7ksbTXKpr-96C6T62DHoiz-NnWBW9HuHeg/exec";
 
 const RASHI_MAP = [
-  { rashi: "Mesh (Aries ♈)", letters: ["A","E","I","O","L"] },
-  { rashi: "Vrishabha (Taurus ♉)", letters: ["B","V","U","W"] },
-  { rashi: "Mithun (Gemini ♊)", letters: ["K","C","Q","G"] },
-  { rashi: "Karka (Cancer ♋)", letters: ["H","D"] },
-  { rashi: "Simha (Leo ♌)", letters: ["M","T"] },
-  { rashi: "Kanya (Virgo ♍)", letters: ["P","N"] },
-  { rashi: "Tula (Libra ♎)", letters: ["R"] },
-  { rashi: "Vrishchik (Scorpio ♏)", letters: ["Y"] },
-  { rashi: "Dhanu (Sagittarius ♐)", letters: ["F","X"] },
-  { rashi: "Makar (Capricorn ♑)", letters: ["J"] },
-  { rashi: "Kumbh (Aquarius ♒)", letters: ["S"] },
-  { rashi: "Meen (Pisces ♓)", letters: ["Z"] },
+  { rashi: "Mesh (Aries)", letters: ["A","E","I","O","L"] },
+  { rashi: "Vrishabha (Taurus)", letters: ["B","V","U","W"] },
+  { rashi: "Mithun (Gemini)", letters: ["K","C","Q","G"] },
+  { rashi: "Karka (Cancer)", letters: ["H","D"] },
+  { rashi: "Simha (Leo)", letters: ["M","T"] },
+  { rashi: "Kanya (Virgo)", letters: ["P","N"] },
+  { rashi: "Tula (Libra)", letters: ["R"] },
+  { rashi: "Vrishchik (Scorpio)", letters: ["Y"] },
+  { rashi: "Dhanu (Sagittarius)", letters: ["F","X"] },
+  { rashi: "Makar (Capricorn)", letters: ["J"] },
+  { rashi: "Kumbh (Aquarius)", letters: ["S"] },
+  { rashi: "Meen (Pisces)", letters: ["Z"] }
 ];
 
 const COLORS = ["#e74c3c","#3498db","#2ecc71","#9b59b6","#e67e22","#1abc9c","#e91e63","#ff9800","#607d8b","#795548"];
@@ -312,34 +312,27 @@ let colorIndex = 0;
 let localNames = [];
 
 const funnyMessages = [
-  "🕐 Asking the stars for approval...",
-  "🪐 Consulting Jupiter about this name...",
-  "📊 Running Anti-Bully Algorithm v2.0...",
-  "📜 Checking the ancient Gujarati scrolls...",
-  "🐘 Fiya is reviewing your suggestion...",
-  "📯 Blowing the shankh before confirmation...",
-  "🌙 Checking the nakshatra alignment...",
-  "🔮 The jyotishi is calculating...",
-  "✋ Taking elders’ aashirwad...",
-  "🌈 Checking if the name passes vibe check...",
-  "🪙 Tossing a lucky coin just in case...",
-  "⚡ Pikachu is dancing approvingly...",
-  "🎊 Preparing confetti made of rose petals...",
-  "🧪 Stress-testing the name against middle schoolers...",
-  "😅 Making sure it doesn’t rhyme with anything suspicious...",
-  "📣 Testing how it sounds when yelled across a playground...",
-  "📚 Running playground nickname simulation...",
-  "🍊 Checking if name sounds good at Navratri...",
-  "📖 Flipping through the Panchang...",
-  "🎯 Making sure cousins can’t weaponize it...",
-  "🎭 Testing dramatic mispronunciations...",
-  "👀 Checking for accidental meme potential...",
+  "Asking the stars for approval...",
+  "Consulting Jupiter about this name...",
+  "Checking the ancient Gujarati scrolls...",
+  "Nazar na lage, submitting...",
+  "Ganeshji is personally reviewing this...",
+  "Making chai while we save your name...",
+  "Dhol wala is warming up, almost there...",
+  "Decorating with marigolds, please wait...",
+  "The jyotishi is doing the calculations...",
+  "Your name is doing dandiya in the server...",
+  "Checking if name sounds good at Navratri...",
+  "Counting the beads on the mala...",
+  "The whole family is being consulted...",
+  "Checking Bollywood baby name archives...",
+  "Seeing if this name fits on a trophy..."
 ];
 
 let msgInterval = null;
 
 function getColor(name) {
-  const key = name.trim().toLowerCase();
+  var key = name.trim().toLowerCase();
   if (!submitterColors[key]) {
     submitterColors[key] = COLORS[colorIndex % COLORS.length];
     colorIndex++;
@@ -348,19 +341,19 @@ function getColor(name) {
 }
 
 function getRashi(name) {
-  const firstLetter = name.trim()[0].toUpperCase();
-  for (let r of RASHI_MAP) {
-    if (r.letters.includes(firstLetter)) return r.rashi;
+  var firstLetter = name.trim()[0].toUpperCase();
+  for (var i = 0; i < RASHI_MAP.length; i++) {
+    if (RASHI_MAP[i].letters.includes(firstLetter)) return RASHI_MAP[i].rashi;
   }
-  return "Other ❓";
+  return "Other";
 }
 
 function showFunnyMessages() {
-  const msg = document.getElementById("msg");
-  let i = Math.floor(Math.random() * funnyMessages.length);
+  var msg = document.getElementById("msg");
+  var i = Math.floor(Math.random() * funnyMessages.length);
   msg.textContent = funnyMessages[i];
   msg.className = "msg loading";
-  msgInterval = setInterval(() => {
+  msgInterval = setInterval(function() {
     i = (i + 1) % funnyMessages.length;
     msg.textContent = funnyMessages[i];
   }, 1800);
@@ -370,137 +363,140 @@ function stopFunnyMessages() {
   if (msgInterval) { clearInterval(msgInterval); msgInterval = null; }
 }
 
-document.getElementById("userName").addEventListener("keydown", e => {
-  if (e.key === "Enter") document.getElementById("babyName").focus();
-});
-document.getElementById("babyName").addEventListener("keydown", e => {
-  if (e.key === "Enter") document.getElementById("nameReason").focus();
-});
-document.getElementById("nameReason").addEventListener("keydown", e => {
-  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitName(); }
-});
-
-
-async function submitName() {
-  const userName = document.getElementById("userName").value.trim();
-  const babyName = document.getElementById("babyName").value.trim();
-  const nameReason = document.getElementById("nameReason").value.trim();
-  const msg = document.getElementById("msg");
+function submitName() {
+  var userName = document.getElementById("userName").value.trim();
+  var babyName = document.getElementById("babyName").value.trim();
+  var nameReason = document.getElementById("nameReason").value.trim();
+  var msg = document.getElementById("msg");
 
   if (!userName || !babyName) {
-    msg.textContent = "👆 We need at least your name and a baby name!";
+    msg.textContent = "We need at least your name and a baby name!";
     msg.className = "msg error";
     return;
   }
 
-  const isDuplicate = localNames.some(n => n.name.toLowerCase() === babyName.toLowerCase());
+  var isDuplicate = localNames.some(function(n) {
+    return n.name.toLowerCase() === babyName.toLowerCase();
+  });
+
   if (isDuplicate) {
-    msg.textContent = `⚠️ "${babyName}" is already in the sanctuary! Try another.`;
+    msg.textContent = babyName + " is already in the sanctuary! Try another.";
     msg.className = "msg error";
     return;
   }
 
-  // Show instantly in UI
   localNames.push({ name: babyName, by: userName, reason: nameReason });
   document.getElementById("babyName").value = "";
   document.getElementById("nameReason").value = "";
   renderNames();
   showFunnyMessages();
 
-  // Save to sheet in background
-  const url = SHEET_URL
+  var url = SHEET_URL
     + "?submittedBy=" + encodeURIComponent(userName)
     + "&name=" + encodeURIComponent(babyName)
     + "&reason=" + encodeURIComponent(nameReason);
 
-  try {
-    await fetch(url);
-  } catch(e) {
-    setTimeout(() => fetch(url), 3000);
-  } finally {
+  fetch(url).then(function() {
     stopFunnyMessages();
-    msg.textContent = `🎉 "${babyName}" has entered the Sanctuary! Got another one?`;
+    msg.textContent = babyName + " has entered the Sanctuary! Got another one?";
     msg.className = "msg success";
-  }
+  }).catch(function() {
+    setTimeout(function() { fetch(url); }, 3000);
+    stopFunnyMessages();
+    msg.textContent = babyName + " saved! Add another name below.";
+    msg.className = "msg success";
+  });
 }
 
+document.getElementById("userName").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") document.getElementById("babyName").focus();
+});
+document.getElementById("babyName").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") document.getElementById("nameReason").focus();
+});
+document.getElementById("nameReason").addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitName(); }
+});
+
 function renderNames() {
-  const counts = {};
-  localNames.forEach(r => {
-    const by = r.by?.trim() || "Unknown";
+  var counts = {};
+  localNames.forEach(function(r) {
+    var by = r.by ? r.by.trim() : "Unknown";
     getColor(by);
     counts[by] = (counts[by] || 0) + 1;
   });
 
+  var medals = ["1st", "2nd", "3rd"];
   document.getElementById("stats").innerHTML = Object.entries(counts)
-    .sort((a, b) => b[1] - a[1])
-    .map(([name, count], idx) => {
-      const medals = ["🥇","🥈","🥉"];
-      const badge = medals[idx] || "🏅";
-      return `<div class="stat-chip" style="background:${getColor(name)}">${badge} ${name}: ${count} name${count > 1 ? 's' : ''}</div>`;
+    .sort(function(a, b) { return b[1] - a[1]; })
+    .map(function(entry, idx) {
+      var name = entry[0];
+      var count = entry[1];
+      var badge = idx < 3 ? medals[idx] : "";
+      return "<div class='stat-chip' style='background:" + getColor(name) + "'>" + badge + " " + name + ": " + count + (count > 1 ? " names" : " name") + "</div>";
     }).join("");
 
-  const grouped = {};
-  RASHI_MAP.forEach(r => grouped[r.rashi] = []);
-  grouped["Other ❓"] = [];
+  var grouped = {};
+  RASHI_MAP.forEach(function(r) { grouped[r.rashi] = []; });
+  grouped["Other"] = [];
 
-  localNames.forEach(r => {
-    const name = r.name?.trim();
-    const by = r.by?.trim() || "Unknown";
-    const reason = r.reason?.trim() || "";
+  localNames.forEach(function(r) {
+    var name = r.name ? r.name.trim() : "";
+    var by = r.by ? r.by.trim() : "Unknown";
+    var reason = r.reason ? r.reason.trim() : "";
     if (!name) return;
-    const rashi = getRashi(name);
+    var rashi = getRashi(name);
     if (!grouped[rashi]) grouped[rashi] = [];
-    grouped[rashi].push({ name, by, reason });
+    grouped[rashi].push({ name: name, by: by, reason: reason });
   });
 
-  document.getElementById("rashiContainer").innerHTML = [...RASHI_MAP.map(r => r.rashi), "Other ❓"].map(rashi => {
-    const names = (grouped[rashi] || []).sort((a, b) => a.name.localeCompare(b.name));
-    if (!names.length) return `
-      <div class="rashi-section">
-        <div class="rashi-title">⭐ ${rashi}</div>
-        <span class="empty">No names yet — be the first! 🌟</span>
-      </div>`;
+  var allRashis = RASHI_MAP.map(function(r) { return r.rashi; });
+  allRashis.push("Other");
 
-    const tags = names.map(n => {
-      const color = getColor(n.by);
-      if (n.reason) {
-        return `<div class="name-card">
-          <div class="name-header" style="background:${color}">${n.name}</div>
-          <div class="name-meta">
-            <div class="by">👤 ${n.by}</div>
-            <div class="reason">💬 ${n.reason}</div>
-          </div>
-        </div>`;
-      }
-      return `<span class="name-tag" style="background:${color}" title="Suggested by ${n.by}">${n.name}</span>`;
-    }).join("");
-
-    return `<div class="rashi-section"><div class="rashi-title">⭐ ${rashi}</div>${tags}</div>`;
+  document.getElementById("rashiContainer").innerHTML = allRashis.map(function(rashi) {
+    var names = (grouped[rashi] || []).sort(function(a, b) { return a.name.localeCompare(b.name); });
+    var tags = "";
+    if (names.length === 0) {
+      tags = "<span class='empty'>No names yet - be the first!</span>";
+    } else {
+      names.forEach(function(n) {
+        var color = getColor(n.by);
+        if (n.reason) {
+          tags += "<div class='name-card'>"
+            + "<div class='name-header' style='background:" + color + "'>" + n.name + "</div>"
+            + "<div class='name-meta'>"
+            + "<div class='by'>By: " + n.by + "</div>"
+            + "<div class='reason'>" + n.reason + "</div>"
+            + "</div></div>";
+        } else {
+          tags += "<span class='name-tag' style='background:" + color + "' title='Suggested by " + n.by + "'>" + n.name + "</span>";
+        }
+      });
+    }
+    return "<div class='rashi-section'><div class='rashi-title'>* " + rashi + "</div>" + tags + "</div>";
   }).join("");
 }
 
-async function loadNames() {
-  try {
-    const res = await fetch(SHEET_URL);
-    const raw = await res.json();
-    localNames = raw.slice(1)
-      .filter(r => r[2])
-      .map(r => ({
-        name: r[2]?.toString().trim(),
-        by: r[1]?.toString().trim() || "Unknown",
-        reason: r[3]?.toString().trim() || ""
-      }));
+function loadNames() {
+  fetch(SHEET_URL).then(function(res) {
+    return res.json();
+  }).then(function(raw) {
+    localNames = raw.slice(1).filter(function(r) { return r[2]; }).map(function(r) {
+      return {
+        name: r[2] ? r[2].toString().trim() : "",
+        by: r[1] ? r[1].toString().trim() : "Unknown",
+        reason: r[3] ? r[3].toString().trim() : ""
+      };
+    });
     renderNames();
-  } catch(e) {
+  }).catch(function(e) {
     console.error("Load error:", e);
-  }
+  });
 }
 
 loadNames();
 setInterval(loadNames, 20000);
+
 </script>
 </body>
-
 </html>
-
