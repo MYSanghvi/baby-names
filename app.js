@@ -1,4 +1,4 @@
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbxHng7vyLaTr-RhnJUZMaXZSoXQvxV1o2jd7ksbTXKpr-96C6T62DHoiz-NnWBW9HuHeg/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwW3tFovjuVxCUoHawfrfY3FQPJVyzcqShE4yNh8CHQ6meFqOoKns_7sxTqwIwVnnTgtA/exec";
 
 const RASHI_MAP = [
   { rashi: "\u0AAE\u0AC7\u0AB7 \u2648 (Aries)",             sortLetters: ["A","L","I","E"],      displayEng: "A, L, I, E",      displayGuj: "\u0A85, \u0AB2, \u0A87" },
