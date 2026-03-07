@@ -1,17 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
 
-/* ── Palette ──
-   Pink:     #FE9EC7
-   Sky Blue: #89D4FF
-   Mint:     #A8E6CF
-   Lavender: #C9B8F0
-   Peach:    #FFCBA4
-   Yellow:   #F9F0A0
-   Teal:     #6DD5C0
-   Coral:    #FF9F9F
-   Blue:     #44ACFF  (accent only, not dominant)
-*/
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -49,24 +37,19 @@ body::before {
   padding: 30px;
   max-width: 580px;
   margin: 0 auto 32px;
-  box-shadow: 0 8px 36px rgba(140,120,200,0.12), 0 2px 0 rgba(255,255,255,0.9) inset;
+  box-shadow: 0 8px 36px rgba(140,120,200,0.12);
   border: 2px solid #ece4f8;
   position: relative;
   z-index: 1;
 }
-
-/* Rainbow ribbon — all 8 palette colors equally */
 .form-card::before {
   content: '';
   position: absolute;
   top: 0; left: 20px; right: 20px;
   height: 5px;
-  background: linear-gradient(90deg,
-    #FE9EC7, #FFCBA4, #F9F0A0, #A8E6CF,
-    #6DD5C0, #89D4FF, #C9B8F0, #FF9F9F);
+  background: linear-gradient(90deg, #FE9EC7, #FFCBA4, #F9F0A0, #A8E6CF, #6DD5C0, #89D4FF, #C9B8F0, #FF9F9F);
   border-radius: 0 0 6px 6px;
 }
-
 .form-card h2 {
   font-size: 1.1rem;
   color: #7a5abf;
@@ -94,7 +77,7 @@ body::before {
 }
 .optional { font-weight: 400; color: #c8c0d8; }
 
-input, textarea {
+input[type="text"], textarea {
   width: 100%;
   padding: 11px 15px;
   border: 2px solid #ece4f8;
@@ -105,14 +88,118 @@ input, textarea {
   background: #faf8ff;
   color: #2c3040;
 }
-input::placeholder, textarea::placeholder { color: #c0b8d0; }
-input:focus, textarea:focus {
+input[type="text"]::placeholder, textarea::placeholder { color: #c0b8d0; }
+input[type="text"]:focus, textarea:focus {
   outline: none;
   border-color: #C9B8F0;
   background: white;
   box-shadow: 0 0 0 4px rgba(201,184,240,0.18);
 }
 textarea { resize: vertical; min-height: 80px; }
+
+/* ── Name + Gender slider row ── */
+.name-gender-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+.name-gender-row label { margin-bottom: 0; white-space: nowrap; flex-shrink: 0; }
+
+/* ── Slider wrap ── */
+.gender-slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.gs-label {
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 0.15s;
+}
+.gs-label:hover { transform: scale(1.2); }
+
+/* ── Track ── */
+.gs-track {
+  position: relative;
+  width: 80px;
+  height: 10px;
+  border-radius: 10px;
+  background: #ece4f8;
+  cursor: pointer;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.10);
+}
+
+/* ── Fill ── */
+.gs-fill {
+  position: absolute;
+  top: 0; bottom: 0;
+  border-radius: 10px;
+  transition: all 0.22s cubic-bezier(.4,0,.2,1);
+  pointer-events: none;
+}
+.gs-fill.girl   { background: linear-gradient(90deg, #f8b8ce, #e07898); left: 0;   width: 50%;  }
+.gs-fill.boy    { background: linear-gradient(90deg, #6aace0, #b8d8f8); left: 50%; width: 50%;  }
+.gs-fill.either { background: linear-gradient(90deg, #e07898, #C9B8F0, #6aace0); left: 0; width: 100%; }
+
+/* ── Thumb ── */
+.gs-thumb {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: white;
+  border: 2.5px solid #b090d8;
+  box-shadow: 0 2px 8px rgba(160,120,220,0.35);
+  cursor: grab;
+  transition: left 0.22s cubic-bezier(.4,0,.2,1), border-color 0.2s, box-shadow 0.2s;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  line-height: 1;
+}
+.gs-thumb:active  { cursor: grabbing; }
+.gs-thumb.girl    { border-color: #e07898; box-shadow: 0 2px 10px rgba(224,120,152,0.45); }
+.gs-thumb.boy     { border-color: #6aace0; box-shadow: 0 2px 10px rgba(106,172,224,0.45); }
+.gs-thumb.either  { border-color: #b090d8; box-shadow: 0 2px 10px rgba(176,144,216,0.45); }
+
+/* ── Notches ── */
+.gs-notch {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: rgba(150,130,180,0.4);
+  pointer-events: none;
+  z-index: 1;
+}
+.gs-notch.left  { left: 4px; }
+.gs-notch.mid   { left: 50%; transform: translate(-50%, -50%); }
+.gs-notch.right { right: 4px; }
+
+/* ── Gender Hint ── */
+#genderHint {
+  font-size: 0.74rem;
+  font-style: italic;
+  margin-bottom: 6px;
+  transition: color 0.2s;
+  min-height: 16px;
+  color: #a898c8;
+}
+#genderHint.girl   { color: #e07898; }
+#genderHint.boy    { color: #6aace0; }
+#genderHint.either { color: #a898c8; }
 
 /* ── Submit ── */
 .submit-section { text-align: center; margin-top: 8px; }
@@ -123,8 +210,7 @@ textarea { resize: vertical; min-height: 80px; }
   font-style: italic;
   line-height: 1.7;
 }
-
-button {
+button[onclick="submitName()"] {
   width: 100%;
   padding: 14px;
   background: linear-gradient(135deg, #b08ae0, #8a60c8);
@@ -134,34 +220,24 @@ button {
   font-size: 1.05rem;
   cursor: pointer;
   font-weight: 800;
-  letter-spacing: 0.3px;
   transition: transform 0.15s, box-shadow 0.2s;
   box-shadow: 0 4px 16px rgba(160,120,220,0.38);
   font-family: 'Nunito', 'Segoe UI', sans-serif;
 }
-button:hover {
+button[onclick="submitName()"]:hover {
   transform: translateY(-2px);
   box-shadow: 0 7px 22px rgba(160,120,220,0.48);
-  background: linear-gradient(135deg, #be9aec, #9a70d8);
 }
-button:active { transform: translateY(0); }
+button[onclick="submitName()"]:active { transform: translateY(0); }
 
 /* ── Messages ── */
-.msg {
-  text-align: center;
-  margin-top: 12px;
-  font-weight: 700;
-  font-size: 0.92rem;
-  min-height: 24px;
-  line-height: 1.5;
-}
+.msg { text-align: center; margin-top: 12px; font-weight: 700; font-size: 0.92rem; min-height: 24px; line-height: 1.5; }
 .success { color: #5aaa80; }
 .error   { color: #e06080; }
 .loading { color: #b080d8; animation: pulse 1s infinite; }
-
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-/* ── Loading msg ── */
+/* ── Loading ── */
 #loadingMsg {
   text-align: center;
   color: #b080d8;
@@ -192,12 +268,7 @@ button:active { transform: translateY(0); }
 #panditjiWarning strong { color: #8a60c8; }
 
 /* ── Leaderboard ── */
-.stats-section {
-  max-width: 900px;
-  margin: 0 auto 24px;
-  position: relative;
-  z-index: 1;
-}
+.stats-section { max-width: 900px; margin: 0 auto 20px; position: relative; z-index: 1; }
 .stats-title {
   text-align: center;
   font-size: 0.82rem;
@@ -207,12 +278,7 @@ button:active { transform: translateY(0); }
   letter-spacing: 1.5px;
   font-weight: 800;
 }
-.stats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
+.stats { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
 .stat-chip {
   padding: 8px 20px;
   border-radius: 24px;
@@ -221,6 +287,37 @@ button:active { transform: translateY(0); }
   color: white;
   box-shadow: 0 3px 10px rgba(0,0,0,0.12);
   font-family: 'Nunito', 'Segoe UI', sans-serif;
+}
+
+/* ── Filter Bar ── */
+.filter-bar-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.filter-label { font-size: 0.85rem; font-weight: 800; color: #9a90b0; }
+.filter-bar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.f-btn {
+  padding: 7px 18px;
+  border: 2px solid #ece4f8;
+  border-radius: 24px;
+  background: white;
+  color: #7a6090;
+  font-size: 0.85rem;
+  font-weight: 700;
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.f-btn:hover { border-color: #C9B8F0; background: #f5f0ff; }
+.f-btn.active {
+  background: linear-gradient(135deg, #b08ae0, #8a60c8);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 3px 10px rgba(160,120,220,0.35);
 }
 
 /* ── Rashi Sections ── */
@@ -247,20 +344,16 @@ button:active { transform: translateY(0); }
   flex-wrap: wrap;
   gap: 8px;
 }
-.rashi-letters-inline {
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #a898c8;
-}
+.rashi-letters-inline { font-size: 0.88rem; font-weight: 700; color: #a898c8; }
 
-/* ── Name Cards & Tags ── */
+/* ── Name Cards ── */
 .name-card {
   display: inline-block;
   margin: 5px;
   border-radius: 16px;
   overflow: hidden;
   vertical-align: top;
-  max-width: 190px;
+  width: 180px;
   box-shadow: 0 3px 12px rgba(140,120,200,0.14);
 }
 .name-card .name-header {
@@ -268,27 +361,85 @@ button:active { transform: translateY(0); }
   color: white;
   font-weight: 800;
   font-size: 0.97rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 .name-card .name-meta {
-  padding: 7px 11px 9px;
+  padding: 7px 11px 4px;
   background: #faf8ff;
   font-size: 0.75rem;
   color: #6a6080;
 }
-.name-card .name-meta .by { font-weight: 700; }
+.name-card .name-meta .by     { font-weight: 700; }
 .name-card .name-meta .reason { font-style: italic; color: #9a90b0; margin-top: 3px; line-height: 1.4; }
+.gender-badge {
+  font-size: 0.72rem;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.28);
+  font-weight: 700;
+}
 
+/* ── Vote Row ── */
+.vote-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 11px 8px;
+  background: #faf8ff;
+  border-top: 1px solid #ece4f8;
+}
+.vote-count { font-size: 0.78rem; font-weight: 800; color: #9a80c0; }
+.vote-btn {
+  padding: 4px 12px;
+  border: 2px solid #C9B8F0;
+  border-radius: 20px;
+  background: white;
+  color: #8a60c8;
+  font-size: 0.78rem;
+  font-weight: 800;
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  cursor: pointer;
+  transition: all 0.18s;
+  width: auto;
+  box-shadow: none;
+}
+.vote-btn:hover { background: #ede0ff; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(160,120,220,0.25); }
+.vote-btn.voted { background: linear-gradient(135deg, #b08ae0, #8a60c8); color: white; border-color: transparent; cursor: default; }
+.vote-btn.voted:hover { transform: none; box-shadow: none; }
+
+/* ── Name Tags (no reason) ── */
+.name-tag-wrap { display: inline-block; margin: 4px; vertical-align: top; }
 .name-tag {
-  display: inline-block;
-  padding: 6px 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
   border-radius: 24px;
-  margin: 4px;
   font-size: 0.88rem;
   color: white;
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(0,0,0,0.10);
   font-family: 'Nunito', 'Segoe UI', sans-serif;
 }
+.tag-vote-btn {
+  background: rgba(255,255,255,0.28);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 2px 7px;
+  cursor: pointer;
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  transition: background 0.15s;
+  width: auto;
+  box-shadow: none;
+}
+.tag-vote-btn:hover  { background: rgba(255,255,255,0.45); transform: none; }
+.tag-vote-btn.voted  { background: rgba(255,255,255,0.55); color: #7a50b8; cursor: default; }
+
 .empty { color: #c0b8d0; font-style: italic; font-size: 0.85rem; }
 
 /* ── Footer ── */
@@ -306,10 +457,7 @@ button:active { transform: translateY(0); }
 
 /* ── Hero Banner ── */
 .hero-banner {
-  background: linear-gradient(135deg,
-    rgba(254,158,199,0.10) 0%,
-    rgba(201,184,240,0.12) 40%,
-    rgba(168,230,207,0.10) 100%);
+  background: linear-gradient(135deg, rgba(254,158,199,0.10) 0%, rgba(201,184,240,0.12) 40%, rgba(168,230,207,0.10) 100%);
   border: 2px solid #ece4f8;
   border-radius: 16px;
   padding: 16px 20px;
@@ -319,22 +467,10 @@ button:active { transform: translateY(0); }
   color: #4a4060;
 }
 .hero-banner strong { color: #7a5abf; }
-.hero-banner .cta {
-  font-weight: 800;
-  color: #e07898;
-  margin-top: 10px;
-  display: block;
-  font-size: 0.97rem;
-}
+.hero-banner .cta   { font-weight: 800; color: #e07898; margin-top: 10px; display: block; font-size: 0.97rem; }
 
-/* ── Title helpers ── */
-.page-title {
-  font-size: 2rem;
-  font-weight: 900;
-  line-height: 1.25;
-  margin-bottom: 16px;
-  color: #2c3040;
-}
-.t-blue   { color: #6aace0; }
-.t-pink   { color: #e07898; }
-.t-lavender   { color: #C9B8F0; }
+/* ── Title ── */
+.page-title   { font-size: 3rem; font-weight: 900; line-height: 1.25; margin-bottom: 16px; color: #2c3040; }
+.t-lavender   { color: #b090d8; }
+.t-blue       { color: #6aace0; }
+.t-pink       { color: #e07898; }
