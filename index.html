@@ -11,14 +11,11 @@
 
 <div class="form-card">
   <div style="text-align:center; margin-bottom:28px; padding-bottom:24px; border-bottom:2px dashed #ece4f8;">
-
-  
-    <h1 class="page-title">
+      <h1 class="page-title">
       <span class="t-lavender">Baby Sanghvi</span><br/>
       <span class="t-blue">Name</span>
       <span class="t-pink">Sanctuary</span>
     </h1>
-
     <div class="hero-banner">
       <p>We're on an <strong>important mission:</strong></p>
       <p>Find a name that sounds adorable at 3 months, cool at 13, and powerful enough to sign emails as CEO at 30.</p>
@@ -34,9 +31,23 @@
     <input type="text" id="userName" placeholder="e.g. Priyanshi, Siddhi, Maulish..." />
   </div>
 
+  <!-- Name + Gender Slider inline -->
   <div class="field-group">
-    <label>Your Brilliant Name Suggestion</label>
-    <div class="hint">Could be a future CEO, Bollywood star, or Prime Minister.</div>
+    <div class="name-gender-row">
+      <label>Your Brilliant Name Suggestion</label>
+      <div class="gender-slider-wrap" title="Drag to set gender">
+        <span class="gs-label gs-left" title="Girl">👧</span>
+        <div class="gs-track">
+          <div class="gs-fill" id="gsFill"></div>
+          <div class="gs-thumb" id="gsThumb"></div>
+          <div class="gs-notch left"></div>
+          <div class="gs-notch mid"></div>
+          <div class="gs-notch right"></div>
+        </div>
+        <span class="gs-label gs-right" title="Boy">👦</span>
+      </div>
+    </div>
+    <div class="hint" id="genderHint">🌈 Either / Neutral</div>
     <input type="text" id="babyName" placeholder="e.g. Arjun, Aanya, Vivaan..." />
   </div>
 
@@ -58,10 +69,21 @@
 
 <div id="panditjiWarning"></div>
 
+<!-- Leaderboard + Filter -->
 <div class="stats-section">
   <div class="stats-title">🏆 Name Wizards Leaderboard</div>
   <div id="loadingMsg">🔮 Consulting the zodiac committee to sort the names...</div>
   <div class="stats" id="stats"></div>
+
+  <!-- Filter hidden until names load -->
+  <div class="filter-bar-wrap" id="filterBar" style="display:none;">
+    <div class="filter-label">Filter:</div>
+    <div class="filter-bar">
+      <button class="f-btn active" onclick="setFilter('All',  this)">🌈 All</button>
+      <button class="f-btn"        onclick="setFilter('Boy',  this)">👦 Boys</button>
+      <button class="f-btn"        onclick="setFilter('Girl', this)">👧 Girls</button>
+    </div>
+  </div>
 </div>
 
 <div id="rashiContainer"></div>
