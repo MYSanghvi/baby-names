@@ -1,0 +1,270 @@
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbxHng7vyLaTr-RhnJUZMaXZSoXQvxV1o2jd7ksbTXKpr-96C6T62DHoiz-NnWBW9HuHeg/exec";
+
+const RASHI_MAP = [
+  { rashi: "\u0AAE\u0AC7\u0AB7 \u2648 (Aries)",       sortLetters: ["A","L","I","E"],      displayEng: "A, L, I, E",      displayGuj: "\u0A85, \u0AB2, \u0A87" },
+  { rashi: "\u0AB5\u0AC3\u0AB7\u0AAD \u2649 (Taurus)", sortLetters: ["B","V","U"],           displayEng: "B, V, U",         displayGuj: "\u0AAC, \u0AB5, \u0A89" },
+  { rashi: "\u0AAE\u0ABF\u0AA5\u0AC1\u0AA8 \u264A (Gemini)", sortLetters: ["K","CHH","GH"], displayEng: "K, CHH, GH",      displayGuj: "\u0A95, \u0A9B, \u0A98" },
+  { rashi: "\u0A95\u0AB0\u0ACD\u0A95 \u264B (Cancer)", sortLetters: ["DDA","H"],             displayEng: "DDA, H",          displayGuj: "\u0AA1, \u0AB9" },
+  { rashi: "\u0AB8\u0ABF\u0A82\u0AB9 \u264C (Leo)",    sortLetters: ["M"],                   displayEng: "M, TTA",          displayGuj: "\u0AAE, \u0A9F" },
+  { rashi: "\u0A95\u0AA8\u0ACD\u0AAF\u0ABE \u264D (Virgo)", sortLetters: ["P"],             displayEng: "P, TTH, NNA",     displayGuj: "\u0AAA" },
+  { rashi: "\u0AA4\u0AC1\u0AB2\u0ABE \u264E (Libra)",  sortLetters: ["R","T"],               displayEng: "R, T",            displayGuj: "\u0AB0, \u0AA4" },
+  { rashi: "\u0AB5\u0AC3\u0AB6\u0ACD\u0A9A\u0ABF\u0A95 \u264F (Scorpio)", sortLetters: ["N","Y"], displayEng: "N, Y",       displayGuj: "\u0AA8, \u0AAF" },
+  { rashi: "\u0AA7\u0AA8\u0AC1 \u2650 (Sagittarius)",  sortLetters: ["BH","DH","F"],         displayEng: "BH, DH, F, DDH", displayGuj: "\u0AAD, \u0AA7, \u0AAB" },
+  { rashi: "\u0AAE\u0A95\u0AB0 \u2651 (Capricorn)",    sortLetters: ["KH","J"],              displayEng: "KH, J",           displayGuj: "\u0A96, \u0A9C" },
+  { rashi: "\u0A95\u0AC1\u0A82\u0AAD \u2652 (Aquarius)", sortLetters: ["G","SH","S"],        displayEng: "G, SH, S, SS",   displayGuj: "\u0A97, \u0AB6, \u0AB8, \u0AB7" },
+  { rashi: "\u0AAE\u0AC0\u0AA8 \u2653 (Pisces)",       sortLetters: ["D","CH","TH","Z"],     displayEng: "D, CH, TH, Z",   displayGuj: "\u0AA6, \u0A9A, \u0AA5, \u0A9D" }
+];
+
+const PANDITJI_REVIEW = ["TTA","TTH","NNA","DDH","SS","O","Q","W","X"];
+const MULTI_INITIALS  = ["CHH","GH","BH","DH","KH","SH","CH","TH","TTA","TTH","NNA","DDH","SS"];
+
+// 10-color balanced palette: warm + cool equally split
+const COLORS = [
+  "#e07898",  // rose pink
+  "#6aace0",  // muted sky blue
+  "#7ac8a8",  // mint green
+  "#b090d8",  // lavender
+  "#f0a060",  // peach
+  "#60b8b0",  // teal
+  "#e0a040",  // amber
+  "#a0b8e0",  // pale blue
+  "#d87898",  // deeper rose
+  "#8ab870"   // sage
+];
+
+const submitterColors = {};
+let colorIndex = 0;
+let localNames   = [];
+let msgInterval  = null;
+
+const funnyMessages = [
+  "🕐 Asking the stars for approval...",
+  "🪐 Consulting Jupiter about this name...",
+  "📊 Running Anti-Bully Algorithm v2.0...",
+  "📜 Checking the ancient Gujarati scrolls...",
+  "🐘 Fiya is reviewing your suggestion...",
+  "📯 Blowing the shankh before confirmation...",
+  "🌙 Checking the nakshatra alignment...",
+  "🔮 The panditji is calculating...",
+  "✋ Taking Fui's aashirwad...",
+  "🌈 Checking if the name passes vibe check...",
+  "🪙 Tossing a lucky coin just in case...",
+  "⚡ Pikachu is dancing approvingly...",
+  "🎊 Preparing confetti made of rose petals...",
+  "🧪 Stress-testing the name against middle schoolers...",
+  "😅 Making sure it doesn't rhyme with anything suspicious...",
+  "📣 Testing how it sounds when yelled across a playground...",
+  "📚 Running playground nickname simulation...",
+  "🍊 Checking if name sounds good at Navratri...",
+  "📖 Flipping through the Panchang...",
+  "🎯 Making sure cousins can't weaponize it...",
+  "🎭 Testing dramatic mispronunciations...",
+  "👀 Checking for accidental meme potential..."
+];
+
+function getColor(name) {
+  var key = name.trim().toLowerCase();
+  if (!submitterColors[key]) {
+    submitterColors[key] = COLORS[colorIndex % COLORS.length];
+    colorIndex++;
+  }
+  return submitterColors[key];
+}
+
+function getPanditjiPrefix(name) {
+  var upper = name.trim().toUpperCase();
+  for (var i = 0; i < PANDITJI_REVIEW.length; i++) {
+    if (upper.indexOf(PANDITJI_REVIEW[i]) === 0) return PANDITJI_REVIEW[i];
+  }
+  return null;
+}
+
+function getRashi(name) {
+  var upper = name.trim().toUpperCase();
+  if (getPanditjiPrefix(name)) return "Others";
+  for (var m = 0; m < MULTI_INITIALS.length; m++) {
+    if (upper.indexOf(MULTI_INITIALS[m]) === 0) {
+      var prefix = MULTI_INITIALS[m];
+      for (var r = 0; r < RASHI_MAP.length; r++) {
+        if (RASHI_MAP[r].sortLetters.indexOf(prefix) !== -1) return RASHI_MAP[r].rashi;
+      }
+    }
+  }
+  var firstLetter = upper[0];
+  for (var i = 0; i < RASHI_MAP.length; i++) {
+    if (RASHI_MAP[i].sortLetters.indexOf(firstLetter) !== -1) return RASHI_MAP[i].rashi;
+  }
+  return "Others";
+}
+
+function showFunnyMessages() {
+  var msg = document.getElementById("msg");
+  var i = Math.floor(Math.random() * funnyMessages.length);
+  msg.textContent = funnyMessages[i];
+  msg.className = "msg loading";
+  msgInterval = setInterval(function () {
+    i = (i + 1) % funnyMessages.length;
+    msg.textContent = funnyMessages[i];
+  }, 1800);
+}
+
+function stopFunnyMessages() {
+  if (msgInterval) { clearInterval(msgInterval); msgInterval = null; }
+}
+
+function submitName() {
+  var userName   = document.getElementById("userName").value.trim();
+  var babyName   = document.getElementById("babyName").value.trim();
+  var nameReason = document.getElementById("nameReason").value.trim();
+  var msg        = document.getElementById("msg");
+
+  if (!userName || !babyName) {
+    msg.textContent = "We need at least your name and a baby name!";
+    msg.className = "msg error";
+    return;
+  }
+
+  var isDuplicate = localNames.some(function (n) {
+    return n.name.toLowerCase() === babyName.toLowerCase();
+  });
+  if (isDuplicate) {
+    msg.textContent = babyName + " is already in the Sanctuary! Try another.";
+    msg.className = "msg error";
+    return;
+  }
+
+  var warnEl = document.getElementById("panditjiWarning");
+  var reviewPrefix = getPanditjiPrefix(babyName);
+  if (reviewPrefix) {
+    warnEl.innerHTML = "⚠️ <strong>" + babyName + "</strong> starts with <strong>"
+      + reviewPrefix + "</strong> — it is under review by panditji and will be placed under Others for now.";
+    warnEl.style.display = "block";
+    setTimeout(function () { warnEl.style.display = "none"; }, 7000);
+  } else {
+    warnEl.style.display = "none";
+  }
+
+  localNames.push({ name: babyName, by: userName, reason: nameReason });
+  document.getElementById("babyName").value   = "";
+  document.getElementById("nameReason").value = "";
+  renderNames();
+  showFunnyMessages();
+
+  var url = SHEET_URL
+    + "?submittedBy=" + encodeURIComponent(userName)
+    + "&name="        + encodeURIComponent(babyName)
+    + "&reason="      + encodeURIComponent(nameReason);
+
+  fetch(url).then(function () {
+    stopFunnyMessages();
+    msg.textContent = babyName + " has entered the Sanctuary! Got another one?";
+    msg.className = "msg success";
+  }).catch(function () {
+    setTimeout(function () { fetch(url); }, 3000);
+    stopFunnyMessages();
+    msg.textContent = babyName + " saved! Add another name below.";
+    msg.className = "msg success";
+  });
+}
+
+document.getElementById("userName").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") document.getElementById("babyName").focus();
+});
+document.getElementById("babyName").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") document.getElementById("nameReason").focus();
+});
+document.getElementById("nameReason").addEventListener("keydown", function (e) {
+  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitName(); }
+});
+
+function renderNames() {
+  document.getElementById("loadingMsg").style.display = "none";
+
+  var counts = {};
+  localNames.forEach(function (r) {
+    var by = r.by ? r.by.trim() : "Unknown";
+    getColor(by);
+    counts[by] = (counts[by] || 0) + 1;
+  });
+
+  document.getElementById("stats").innerHTML = Object.entries(counts)
+    .sort(function (a, b) { return b[1] - a[1]; })
+    .map(function (entry) {
+      var name = entry[0], count = entry[1];
+      return "<div class='stat-chip' style='background:" + getColor(name) + "'>"
+        + name + ": " + count + (count > 1 ? " names" : " name") + "</div>";
+    }).join("");
+
+  var grouped = {};
+  RASHI_MAP.forEach(function (r) { grouped[r.rashi] = []; });
+  grouped["Others"] = [];
+
+  localNames.forEach(function (r) {
+    var name   = r.name   ? r.name.trim()   : "";
+    var by     = r.by     ? r.by.trim()     : "Unknown";
+    var reason = r.reason ? r.reason.trim() : "";
+    if (!name) return;
+    var rashi = getRashi(name);
+    if (!grouped[rashi]) grouped[rashi] = [];
+    grouped[rashi].push({ name, by, reason });
+  });
+
+  var allRashis = RASHI_MAP.map(function (r) { return r.rashi; });
+  allRashis.push("Others");
+
+  document.getElementById("rashiContainer").innerHTML = allRashis.map(function (rashi) {
+    var names    = (grouped[rashi] || []).sort(function (a, b) { return a.name.localeCompare(b.name); });
+    var rashiObj = RASHI_MAP.find(function (r) { return r.rashi === rashi; });
+    var engLetters = rashiObj ? rashiObj.displayEng : "";
+    var gujLetters = rashiObj ? rashiObj.displayGuj : "";
+    var tags = "";
+
+    if (names.length === 0) {
+      tags = "<span class='empty'>No names yet — be the first! ☁️</span>";
+    } else {
+      names.forEach(function (n) {
+        var color = getColor(n.by);
+        if (n.reason) {
+          tags += "<div class='name-card'>"
+            + "<div class='name-header' style='background:" + color + "'>" + n.name + "</div>"
+            + "<div class='name-meta'><div class='by'>By: " + n.by + "</div>"
+            + "<div class='reason'>" + n.reason + "</div></div></div>";
+        } else {
+          tags += "<span class='name-tag' style='background:" + color
+            + "' title='Suggested by " + n.by + "'>" + n.name + "</span>";
+        }
+      });
+    }
+
+    var lettersHtml = engLetters
+      ? "<span class='rashi-letters-inline'>&nbsp;·&nbsp;" + engLetters
+        + "&nbsp;&nbsp;|&nbsp;&nbsp;" + gujLetters + "</span>"
+      : "";
+
+    return "<div class='rashi-section'>"
+      + "<div class='rashi-title'>" + rashi + lettersHtml + "</div>"
+      + tags + "</div>";
+  }).join("");
+}
+
+function loadNames() {
+  fetch(SHEET_URL)
+    .then(function (res) { return res.json(); })
+    .then(function (raw) {
+      localNames = raw.slice(1).filter(function (r) { return r[2]; }).map(function (r) {
+        return {
+          name:   r[2] ? r[2].toString().trim() : "",
+          by:     r[1] ? r[1].toString().trim() : "Unknown",
+          reason: r[3] ? r[3].toString().trim() : ""
+        };
+      });
+      renderNames();
+    })
+    .catch(function (e) {
+      document.getElementById("loadingMsg").style.display = "none";
+      console.error("Load error:", e);
+    });
+}
+
+loadNames();
+setInterval(loadNames, 20000);

@@ -5,218 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <meta name="description" content="Help name Baby Sanghvi! Submit your baby name suggestions, see them sorted by Gujarati rashi sign, and compete for the top spot on the Name Wizards leaderboard." />
   <title>Baby Sanghvi Name Sanctuary</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: linear-gradient(135deg, #fff8f0 0%, #fef0f5 100%);
-      color: #333;
-      padding: 20px;
-      min-height: 100vh;
-    }
-
-    .form-card {
-      background: white;
-      border-radius: 16px;
-      padding: 28px;
-      max-width: 580px;
-      margin: 0 auto 30px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.09);
-    }
-
-    .form-card h2 {
-      font-size: 1.2rem;
-      color: #c0392b;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .field-group { margin-bottom: 18px; }
-    .field-group label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.95rem;
-      margin-bottom: 4px;
-      color: #444;
-    }
-    .field-group .hint {
-      font-size: 0.78rem;
-      color: #aaa;
-      margin-bottom: 6px;
-      font-style: italic;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1.5px solid #e0e0e0;
-      border-radius: 10px;
-      font-size: 0.97rem;
-      font-family: 'Segoe UI', sans-serif;
-      transition: border 0.2s;
-      background: #fafafa;
-    }
-    input:focus, textarea:focus {
-      outline: none;
-      border-color: #e74c3c;
-      background: white;
-    }
-    textarea { resize: vertical; min-height: 80px; }
-
-    .submit-section { text-align: center; margin-top: 8px; }
-    .submit-note {
-      font-size: 0.82rem;
-      color: #bbb;
-      margin-bottom: 10px;
-      font-style: italic;
-      line-height: 1.6;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #e74c3c, #c0392b);
-      color: white;
-      border: none;
-      border-radius: 10px;
-      font-size: 1.05rem;
-      cursor: pointer;
-      font-weight: bold;
-      letter-spacing: 0.3px;
-      transition: transform 0.1s, box-shadow 0.2s;
-      box-shadow: 0 3px 10px rgba(231,76,60,0.3);
-    }
-    button:hover { transform: translateY(-1px); box-shadow: 0 5px 16px rgba(231,76,60,0.4); }
-    button:active { transform: translateY(0); }
-
-    .msg {
-      text-align: center;
-      margin-top: 12px;
-      font-weight: bold;
-      font-size: 0.92rem;
-      min-height: 24px;
-      line-height: 1.5;
-    }
-    .success { color: #27ae60; }
-    .error { color: #e74c3c; }
-    .loading { color: #e67e22; animation: pulse 1s infinite; }
-    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-
-    .stats-section {
-      max-width: 900px;
-      margin: 0 auto 24px;
-    }
-    .stats-title {
-      text-align: center;
-      font-size: 0.85rem;
-      color: #bbb;
-      margin-bottom: 10px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-    }
-    .stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-    }
-    .stat-chip {
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 0.85rem;
-      font-weight: bold;
-      color: white;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.12);
-    }
-
-    .rashi-section {
-      max-width: 900px;
-      margin: 0 auto 16px;
-      background: white;
-      border-radius: 14px;
-      padding: 20px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.07);
-    }
-    .rashi-title {
-      font-size: 1rem;
-      font-weight: bold;
-      margin-bottom: 4px;
-      padding-bottom: 8px;
-      border-bottom: 2px solid #f5f5f5;
-      color: #444;
-    }
-    .rashi-letters {
-      display: block;
-      font-size: 0.78rem;
-      color: #bbb;
-      font-weight: normal;
-      margin-bottom: 10px;
-      margin-top: 2px;
-    }
-
-    .name-card {
-      display: inline-block;
-      margin: 5px;
-      border-radius: 12px;
-      overflow: hidden;
-      vertical-align: top;
-      max-width: 190px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    .name-card .name-header {
-      padding: 7px 13px;
-      color: white;
-      font-weight: bold;
-      font-size: 0.97rem;
-    }
-    .name-card .name-meta {
-      padding: 6px 10px 8px;
-      background: #fafafa;
-      font-size: 0.75rem;
-      color: #555;
-    }
-    .name-card .name-meta .by { font-weight: 600; }
-    .name-card .name-meta .reason { font-style: italic; color: #777; margin-top: 3px; line-height: 1.4; }
-
-    .name-tag {
-      display: inline-block;
-      padding: 6px 14px;
-      border-radius: 20px;
-      margin: 4px;
-      font-size: 0.9rem;
-      color: white;
-      font-weight: 500;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    }
-    .empty { color: #ccc; font-style: italic; font-size: 0.85rem; }
-
-    .footer {
-      text-align: center;
-      margin-top: 40px;
-      font-size: 0.8rem;
-      color: #ccc;
-      padding-bottom: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <div class="form-card">
-  <div style="text-align:center; margin-bottom:28px; padding-bottom:24px; border-bottom:2px solid #fef0f0;">
-    <h1 style="font-size:1.8rem; color:#c0392b; line-height:1.3; margin-bottom:16px;">
-      👶 Baby Sanghvi Name Sanctuary ✨
+  <div style="text-align:center; margin-bottom:28px; padding-bottom:24px; border-bottom:2px dashed #ece4f8;">
+
+  
+    <h1 class="page-title">
+      <span class="t-lavender">Baby Sanghvi</span><br/>
+      <span class="t-blue">Name</span>
+      <span class="t-pink">Sanctuary</span>
     </h1>
-    <div style="background:#fff8f0; border-left:4px solid #e74c3c; border-radius:8px; padding:14px 18px; text-align:left; font-size:0.93rem; line-height:1.9; color:#555;">
+
+    <div class="hero-banner">
       <p>We're on an <strong>important mission:</strong></p>
       <p>Find a name that sounds adorable at 3 months, cool at 13, and powerful enough to sign emails as CEO at 30.</p>
-      <p style="margin-top:10px; font-weight:bold; color:#c0392b;">Think you've got the winner? Drop it below. 👇</p>
+      <span class="cta">Think you've got the winner? Drop it below. 👇</span>
     </div>
   </div>
 
-  <h2>Name Wizard Details</h2>
+  <h2>🧙 Name Wizard Details</h2>
 
   <div class="field-group">
     <label>Your Name</label>
@@ -231,8 +41,8 @@
   </div>
 
   <div class="field-group">
-    <label>Why This Name? <span style="font-weight:400; color:#bbb;">(Optional)</span></label>
-    <div class="hint">Meaning, origin, numerology, family story… or simply “heard it somewhere and loved it.”</div>
+    <label>Why This Name? <span class="optional">(Optional)</span></label>
+    <div class="hint">Meaning, origin, numerology, family story… or simply "heard it somewhere and loved it."</div>
     <textarea id="nameReason" placeholder="Tell us the story behind the name."></textarea>
   </div>
 
@@ -241,328 +51,23 @@
       The winning name earns eternal family glory.<br/>
       (And the right to say "I told you so" for the next 30 years.)
     </div>
-    <button onclick="submitName()">Submit your masterpiece</button>
+    <button onclick="submitName()">🌟 Submit your masterpiece</button>
     <div class="msg" id="msg"></div>
   </div>
 </div>
 
+<div id="panditjiWarning"></div>
+
 <div class="stats-section">
   <div class="stats-title">🏆 Name Wizards Leaderboard</div>
+  <div id="loadingMsg">🔮 Consulting the zodiac committee to sort the names...</div>
   <div class="stats" id="stats"></div>
 </div>
 
 <div id="rashiContainer"></div>
 
-<div class="footer">Created by Maulish for Baby Sanghvi · Helping the family choose a legendary name.</div>
+<div class="footer">🌈 Created by Maulish for Baby Sanghvi · Helping the family choose a legendary name ✨</div>
 
-<script>
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbxHng7vyLaTr-RhnJUZMaXZSoXQvxV1o2jd7ksbTXKpr-96C6T62DHoiz-NnWBW9HuHeg/exec";
-
-// sortLetters = letters used ONLY for sorting logic (from your confirmed chart)
-// displayEng  = letters shown in the UI (English)
-// displayGuj  = letters shown in the UI (Gujarati)
-const RASHI_MAP = [
-  {
-    rashi: "\\u0AAE\\u0AC7\\u0AB7 \\u2648 (Aries)",
-    sortLetters: ["A","L","I","E"],
-    displayEng: "A, L, I, E",
-    displayGuj: "\\u0A85, \\u0AB2, \\u0A87"
-  },
-  {
-    rashi: "\\u0AB5\\u0AC3\\u0AB7\\u0AAD \\u2649 (Taurus)",
-    sortLetters: ["B","V","U"],
-    displayEng: "B, V, U",
-    displayGuj: "\\u0AAC, \\u0AB5, \\u0A89"
-  },
-  {
-    rashi: "\\u0AAE\\u0ABF\\u0AA5\\u0AC1\\u0AA8 \\u264A (Gemini)",
-    sortLetters: ["K","CHH","GH"],
-    displayEng: "K, CHH, GH",
-    displayGuj: "\\u0A95, \\u0A9B, \\u0A98"
-  },
-  {
-    rashi: "\\u0A95\\u0AB0\\u0ACD\\u0A95 \\u264B (Cancer)",
-    sortLetters: ["DDA", "H"],
-    displayEng: "DDA, H",
-    displayGuj: "\\u0AA1, \\u0AB9"
-  },
-  {
-    rashi: "\\u0AB8\\u0ABF\\u0A82\\u0AB9 \\u264C (Leo)",
-    sortLetters: ["M"],
-    displayEng: "M, TTA",   
-    displayGuj: "\\u0AAE, \\u0A9F"
-  },
-  {
-    rashi: "\\u0A95\\u0AA8\\u0ACD\\u0AAF\\u0ABE \\u264D (Virgo)",
-    sortLetters: ["P"],
-    displayEng: "P, TTH, NNA" ,
-    displayGuj: "\\u0AAA"
-  },
-  {
-    rashi: "\\u0AA4\\u0AC1\\u0AB2\\u0ABE \\u264E (Libra)",
-    sortLetters: ["R","T"],
-    displayEng: "R, T",
-    displayGuj: "\\u0AB0, \\u0AA4"
-  },
-  {
-    rashi: "\\u0AB5\\u0AC3\\u0AB6\\u0ACD\\u0A9A\\u0ABF\\u0A95 \\u264F (Scorpio)",
-    sortLetters: ["N","Y"],
-    displayEng: "N, Y",
-    displayGuj: "\\u0AA8, \\u0AAF"
-  },
-  {
-    rashi: "\\u0AA7\\u0AA8\\u0AC1 \\u2650 (Sagittarius)",
-    sortLetters: ["BH","DH","F"],
-    displayEng: "BH, DH, F, DDH",
-    displayGuj: "\\u0AAD, \\u0AA7, \\u0AAB"
-  },
-  {
-    rashi: "\\u0AAE\\u0A95\\u0AB0 \\u2651 (Capricorn)",
-    sortLetters: ["KH","J"],
-    displayEng: "KH, J",
-    displayGuj: "\\u0A96, \\u0A9C"
-  },
-  {
-    rashi: "\\u0A95\\u0AC1\\u0A82\\u0AAD \\u2652 (Aquarius)",
-    sortLetters: ["G","SH","S"],
-    displayEng: "G, SH, S, SS",
-    displayGuj: "\\u0A97, \\u0AB6, \\u0AB8, \\u0AB7"
-  },
-  {
-    rashi: "\\u0AAE\\u0AC0\\u0AA8 \\u2653 (Pisces)",
-    sortLetters: ["D","CH","TH","Z"],
-    displayEng: "D, CH, TH, Z",
-    displayGuj: "\\u0AA6, \\u0A9A, \\u0AA5, \\u0A9D"
-  }
-];
-
-// Multi-letter prefixes checked before single letters (longest first)
-const MULTI_INITIALS = ["CHH","GH","BH","DH","KH","SH","CH","TH"];
-
-const COLORS = ["#e74c3c","#3498db","#2ecc71","#9b59b6","#e67e22","#1abc9c","#e91e63","#ff9800","#607d8b","#795548"];
-const submitterColors = {};
-let colorIndex = 0;
-let localNames = [];
-
-const funnyMessages = [
-  "🕐 Asking the stars for approval...",
-  "🪐 Consulting Jupiter about this name...",
-  "📊 Running Anti-Bully Algorithm v2.0...",
-  "📜 Checking the ancient Gujarati scrolls...",
-  "🐘 Fiya is reviewing your suggestion...",
-  "📯 Blowing the shankh before confirmation...",
-  "🌙 Checking the nakshatra alignment...",
-  "🔮 The panditji is calculating...",
-  "✋ Taking Fui’s aashirwad...",
-  "🌈 Checking if the name passes vibe check...",
-  "🪙 Tossing a lucky coin just in case...",
-  "⚡ Pikachu is dancing approvingly...",
-  "🎊 Preparing confetti made of rose petals...",
-  "🧪 Stress-testing the name against middle schoolers...",
-  "😅 Making sure it doesn’t rhyme with anything suspicious...",
-  "📣 Testing how it sounds when yelled across a playground...",
-  "📚 Running playground nickname simulation...",
-  "🍊 Checking if name sounds good at Navratri...",
-  "📖 Flipping through the Panchang...",
-  "🎯 Making sure cousins can’t weaponize it...",
-  "🎭 Testing dramatic mispronunciations...",
-  "👀 Checking for accidental meme potential..."
-];
-
-let msgInterval = null;
-
-function getColor(name) {
-  var key = name.trim().toLowerCase();
-  if (!submitterColors[key]) {
-    submitterColors[key] = COLORS[colorIndex % COLORS.length];
-    colorIndex++;
-  }
-  return submitterColors[key];
-}
-
-function getRashi(name) {
-  var upper = name.trim().toUpperCase();
-
-  // Check multi-letter prefixes first
-  for (var m = 0; m < MULTI_INITIALS.length; m++) {
-    if (upper.indexOf(MULTI_INITIALS[m]) === 0) {
-      var prefix = MULTI_INITIALS[m];
-      for (var r = 0; r < RASHI_MAP.length; r++) {
-        if (RASHI_MAP[r].sortLetters.indexOf(prefix) !== -1) {
-          return RASHI_MAP[r].rashi;
-        }
-      }
-    }
-  }
-
-  // Then single letter
-  var firstLetter = upper[0];
-  for (var i = 0; i < RASHI_MAP.length; i++) {
-    if (RASHI_MAP[i].sortLetters.indexOf(firstLetter) !== -1) {
-      return RASHI_MAP[i].rashi;
-    }
-  }
-
-  return "Other";
-}
-
-function showFunnyMessages() {
-  var msg = document.getElementById("msg");
-  var i = Math.floor(Math.random() * funnyMessages.length);
-  msg.textContent = funnyMessages[i];
-  msg.className = "msg loading";
-  msgInterval = setInterval(function() {
-    i = (i + 1) % funnyMessages.length;
-    msg.textContent = funnyMessages[i];
-  }, 1800);
-}
-
-function stopFunnyMessages() {
-  if (msgInterval) { clearInterval(msgInterval); msgInterval = null; }
-}
-
-function submitName() {
-  var userName = document.getElementById("userName").value.trim();
-  var babyName = document.getElementById("babyName").value.trim();
-  var nameReason = document.getElementById("nameReason").value.trim();
-  var msg = document.getElementById("msg");
-
-  if (!userName || !babyName) {
-    msg.textContent = "We need at least your name and a baby name!";
-    msg.className = "msg error";
-    return;
-  }
-
-  var isDuplicate = localNames.some(function(n) {
-    return n.name.toLowerCase() === babyName.toLowerCase();
-  });
-
-  if (isDuplicate) {
-    msg.textContent = babyName + " is already in the Sanctuary! Try another.";
-    msg.className = "msg error";
-    return;
-  }
-
-  localNames.push({ name: babyName, by: userName, reason: nameReason });
-  document.getElementById("babyName").value = "";
-  document.getElementById("nameReason").value = "";
-  renderNames();
-  showFunnyMessages();
-
-  var url = SHEET_URL
-    + "?submittedBy=" + encodeURIComponent(userName)
-    + "&name=" + encodeURIComponent(babyName)
-    + "&reason=" + encodeURIComponent(nameReason);
-
-  fetch(url).then(function() {
-    stopFunnyMessages();
-    msg.textContent = babyName + " has entered the Sanctuary! Got another one?";
-    msg.className = "msg success";
-  }).catch(function() {
-    setTimeout(function() { fetch(url); }, 3000);
-    stopFunnyMessages();
-    msg.textContent = babyName + " saved! Add another name below.";
-    msg.className = "msg success";
-  });
-}
-
-document.getElementById("userName").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") document.getElementById("babyName").focus();
-});
-document.getElementById("babyName").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") document.getElementById("nameReason").focus();
-});
-document.getElementById("nameReason").addEventListener("keydown", function(e) {
-  if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitName(); }
-});
-
-function renderNames() {
-  var counts = {};
-  localNames.forEach(function(r) {
-    var by = r.by ? r.by.trim() : "Unknown";
-    getColor(by);
-    counts[by] = (counts[by] || 0) + 1;
-  });
-
-  var medals = ["1st","2nd","3rd"];
-  document.getElementById("stats").innerHTML = Object.entries(counts)
-    .sort(function(a, b) { return b[1] - a[1]; })
-    .map(function(entry, idx) {
-      var name = entry[0];
-      var count = entry[1];
-      var badge = idx < 3 ? medals[idx] + " " : "";
-      return "<div class='stat-chip' style='background:" + getColor(name) + "'>" + badge + name + ": " + count + (count > 1 ? " names" : " name") + "</div>";
-    }).join("");
-
-  var grouped = {};
-  RASHI_MAP.forEach(function(r) { grouped[r.rashi] = []; });
-  grouped["Other"] = [];
-
-  localNames.forEach(function(r) {
-    var name = r.name ? r.name.trim() : "";
-    var by = r.by ? r.by.trim() : "Unknown";
-    var reason = r.reason ? r.reason.trim() : "";
-    if (!name) return;
-    var rashi = getRashi(name);
-    if (!grouped[rashi]) grouped[rashi] = [];
-    grouped[rashi].push({ name: name, by: by, reason: reason });
-  });
-
-  var allRashis = RASHI_MAP.map(function(r) { return r.rashi; });
-  allRashis.push("Other");
-
-  document.getElementById("rashiContainer").innerHTML = allRashis.map(function(rashi) {
-    var names = (grouped[rashi] || []).sort(function(a, b) { return a.name.localeCompare(b.name); });
-    var rashiObj = RASHI_MAP.filter(function(r) { return r.rashi === rashi; })[0];
-    var engLetters = rashiObj ? rashiObj.displayEng : "";
-    var gujLetters = rashiObj ? rashiObj.displayGuj : "";
-    var tags = "";
-
-    if (names.length === 0) {
-      tags = "<span class='empty'>No names yet - be the first!</span>";
-    } else {
-      names.forEach(function(n) {
-        var color = getColor(n.by);
-        if (n.reason) {
-          tags += "<div class='name-card'>"
-            + "<div class='name-header' style='background:" + color + "'>" + n.name + "</div>"
-            + "<div class='name-meta'>"
-            + "<div class='by'>By: " + n.by + "</div>"
-            + "<div class='reason'>" + n.reason + "</div>"
-            + "</div></div>";
-        } else {
-          tags += "<span class='name-tag' style='background:" + color + "' title='Suggested by " + n.by + "'>" + n.name + "</span>";
-        }
-      });
-    }
-
-    return "<div class='rashi-section'>"
-      + "<div class='rashi-title'>" + rashi + "</div>"
-      + (engLetters ? "<span class='rashi-letters'>" + engLetters + " &nbsp;|&nbsp; " + gujLetters + "</span>" : "")
-      + tags
-      + "</div>";
-  }).join("");
-}
-
-function loadNames() {
-  fetch(SHEET_URL).then(function(res) {
-    return res.json();
-  }).then(function(raw) {
-    localNames = raw.slice(1).filter(function(r) { return r[2]; }).map(function(r) {
-      return {
-        name: r[2] ? r[2].toString().trim() : "",
-        by: r[1] ? r[1].toString().trim() : "Unknown",
-        reason: r[3] ? r[3].toString().trim() : ""
-      };
-    });
-    renderNames();
-  }).catch(function(e) {
-    console.error("Load error:", e);
-  });
-}
-
-loadNames();
-setInterval(loadNames, 20000);
-</script>
+<script src="app.js"></script>
 </body>
 </html>
