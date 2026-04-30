@@ -28,7 +28,7 @@ const submitterColors = {};
 let colorIndex = 0;
 let localNames = [];
 let msgInterval = null;
-let activeRashiFilterMode = "all";
+let activeRashiFilterMode = "virgo";
 let selectedRashiFilters = [];
 
 var _audioCtx = null;
