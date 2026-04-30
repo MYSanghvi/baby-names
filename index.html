@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <meta name="description" content="Help name Baby Sanghvi! Submit your baby name suggestions, see them sorted by Gujarati rashi sign, and compete for the top spot on the Name Wizards leaderboard."[...]
+  <meta name="description" content="Help name Baby Sanghvi! Submit your baby name suggestions, see them sorted by Gujarati rashi sign, and compete for the top spot on the Name Wizards leaderboard." />
   <title>Baby Sanghvi Name Sanctuary</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
 <div class="form-card">
-  <div style="text-align:center; margin-bottom:28px; padding-bottom:24px; border-bottom:2px dashed #ece4f8;">
+  <div style="text-align:center; margin-bottom:28px; padding-bottom:24px; border-bottom:2px dashed #cfe2f7;">
       <h1 class="page-title">
       <span class="t-lavender">Baby Sanghvi</span><br/>
       <span class="t-blue">Name</span>
@@ -18,12 +18,13 @@
     </h1>
     <div class="hero-banner">
       <p>We're on an <strong>important mission:</strong></p>
-      <p>Find a name that sounds adorable at 3 months, cool at 13, and powerful enough to sign emails as CEO at 30.</p>
-      <span class="cta">Think you've got the winner? Drop it below. 👇</span>
+      <p>The baby has arrived. It’s a boy. Born on 28 April 2026. Yes, we checked the stars and apparently, he’s a Virgo (organized, thoughtful… already judging our name choices like all the virgos do).</p> <br>
+<p><strong>Now the task is real:</strong> Find a name that feels playful in childhood, confident in school, and strong enough to sign emails as CEO at 30.</p>
+      <span class="cta">Send in your best picks and explore them by zodiac sign below.</span>
     </div>
   </div>
 
-  <h2>🧙 Name Wizard Details</h2>
+  <h2>✈️ Name Mission Details</h2>
 
   <div class="field-group">
     <label>Your Name</label>
@@ -32,7 +33,7 @@
   </div>
 
   <div class="field-group">
-    <label>Your Brilliant Name Suggestion</label>
+    <label>Your Baby Boy Name Suggestion</label>
     <input type="text" id="babyName" placeholder="e.g. Arjun, Aanya, Vivaan..." />
   </div>
 
@@ -43,27 +44,33 @@
   </div>
 
   <div class="submit-section">
-    <div class="submit-note">
-      The winning name earns eternal family glory.<br/>
-      (And the right to say "I told you so" for the next 30 years.)
-    </div>
-    <button onclick="submitName()">🌟 Submit your masterpiece</button>
-    <div class="msg" id="msg"></div>
+   
+  <div class="submit-note">The winning name earns eternal family glory. <br>
+(And the right to say "I told you so" for the next 30 years.)</div>
+  
+    
+    <button onclick="submitName()">Submit Name</button> <br></br>
+	<div class="submit-note">Names are grouped by zodiac sign after submission.</div>
   </div>
+
+  <div id="msg" class="msg"></div>
 </div>
 
 <div id="panditjiWarning"></div>
 
-<!-- Leaderboard -->
 <div class="stats-section">
   <div class="stats-title">🏆 Name Wizards Leaderboard</div>
-  <div id="loadingMsg">🔮 Consulting the zodiac committee to sort the names...</div>
-  <div class="stats" id="stats"></div>
+  <div id="stats" class="stats"></div>
 </div>
 
-<div id="rashiContainer"></div>
+<div id="rashiFilterHost" class="rashi-filter-host"></div>
 
-<div class="footer">🌈 Created by Maulish for Baby Sanghvi · Helping the family choose a legendary name ✨</div>
+<div id="loadingMsg">Loading names from the sanctuary...</div>
+<div id="namesList"></div>
+
+<div class="footer">
+  Created by Maulish for Baby Sanghvi · Helping the family choose a legendary name
+</div>
 
 <script src="app.js"></script>
 </body>
