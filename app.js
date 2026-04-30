@@ -27,8 +27,6 @@ const COLORS = [
 const submitterColors = {};
 let colorIndex     = 0;
 let localNames     = [];
-let activeFilter   = "All";
-let selectedGender = "Either";
 let msgInterval    = null;
 let _hasLoadedOnce = false;
 
@@ -190,80 +188,6 @@ function genderEmoji(g) {
   return "🌈";
 }
 
-// ── Gender Slider ──
-function setGender(val) {
-  if (val !== selectedGender) feedback("click");
-  selectedGender = val;
-  var thumb = document.getElementById("gsThumb");
-  var fill  = document.getElementById("gsFill");
-  var hint  = document.getElementById("genderHint");
-
-  thumb.classList.remove("girl","boy","either");
-  fill.classList.remove("girl","boy","either");
-  hint.classList.remove("girl","boy","either");
-
-  if (val === "Girl") {
-    thumb.textContent = "👧";
-    thumb.style.left  = "0%";
-    thumb.classList.add("girl");
-    fill.classList.add("girl");
-    hint.textContent = "👧 Girl";
-    hint.classList.add("girl");
-  } else if (val === "Boy") {
-    thumb.textContent = "👦";
-    thumb.style.left  = "100%";
-    thumb.classList.add("boy");
-    fill.classList.add("boy");
-    hint.textContent = "👦 Boy";
-    hint.classList.add("boy");
-  } else {
-    thumb.textContent = "🌈";
-    thumb.style.left  = "50%";
-    thumb.classList.add("either");
-    fill.classList.add("either");
-    hint.textContent = "🌈 Either / Neutral";
-    hint.classList.add("either");
-  }
-}
-
-function initGenderSlider() {
-  var track    = document.querySelector(".gs-track");
-  var thumb    = document.getElementById("gsThumb");
-  var dragging = false;
-
-  function valFromX(clientX) {
-    var rect  = track.getBoundingClientRect();
-    var ratio = (clientX - rect.left) / rect.width;
-    ratio = Math.max(0, Math.min(1, ratio));
-    if (ratio < 0.33)      return "Girl";
-    else if (ratio > 0.66) return "Boy";
-    else                   return "Either";
-  }
-
-  thumb.addEventListener("mousedown",   function(e) { dragging = true; e.preventDefault(); });
-  document.addEventListener("mousemove", function(e) { if (dragging) setGender(valFromX(e.clientX)); });
-  document.addEventListener("mouseup",   function()  { dragging = false; });
-
-  thumb.addEventListener("touchstart",   function(e) { dragging = true; e.preventDefault(); }, { passive: false });
-  document.addEventListener("touchmove", function(e) { if (dragging) setGender(valFromX(e.touches[0].clientX)); }, { passive: true });
-  document.addEventListener("touchend",  function()  { dragging = false; });
-
-  track.addEventListener("click", function(e) { if (e.target !== thumb) setGender(valFromX(e.clientX)); });
-  document.querySelector(".gs-left").addEventListener("click",  function() { setGender("Girl"); });
-  document.querySelector(".gs-right").addEventListener("click", function() { setGender("Boy");  });
-
-  setGender("Either");
-}
-
-// ── Filter ──
-function setFilter(val, btn) {
-  activeFilter = val;
-  document.querySelectorAll(".f-btn").forEach(function(b) { b.classList.remove("active"); });
-  btn.classList.add("active");
-  feedback("click");
-  renderNames();
-}
-
 // ── Voting ──
 function castVote(nameStr) {
   var voter     = document.getElementById("userName").value.trim();
@@ -359,12 +283,9 @@ function submitName() {
     warnEl.style.display = "none";
   }
 
-  var submittedGender = selectedGender;
-
-  localNames.push({ name: babyName, by: userName, reason: nameReason, gender: submittedGender, votes: 0 });
+  localNames.push({ name: babyName, by: userName, reason: nameReason, gender: "Either", votes: 0 });
   document.getElementById("babyName").value   = "";
   document.getElementById("nameReason").value = "";
-  setGender("Either");
   renderNames();
   showFunnyMessages();
 
@@ -373,7 +294,7 @@ function submitName() {
     + "&submittedBy=" + encodeURIComponent(userName)
     + "&name="        + encodeURIComponent(babyName)
     + "&reason="      + encodeURIComponent(nameReason)
-    + "&gender="      + encodeURIComponent(submittedGender);
+    + "&gender="      + encodeURIComponent("Either");
 
   fetch(url).then(function() {
     stopFunnyMessages();
@@ -402,7 +323,6 @@ document.getElementById("nameReason").addEventListener("keydown", function(e) {
 // ── Render ──
 function renderNames() {
   document.getElementById("loadingMsg").style.display = "none";
-  document.getElementById("filterBar").style.display  = "flex";
 
   // Leaderboard
   var counts = {};
@@ -418,19 +338,12 @@ function renderNames() {
         + entry[0] + ": " + entry[1] + (entry[1] > 1 ? " names" : " name") + "</div>";
     }).join("");
 
-  // Gender filter — Either always shows in Boys and Girls views
-  var filtered = activeFilter === "All"
-    ? localNames
-    : localNames.filter(function(n) {
-        return n.gender === activeFilter || n.gender === "Either" || !n.gender;
-      });
-
-  // Group by rashi
+  // Group by rashi (show all names, no gender filtering)
   var grouped = {};
   RASHI_MAP.forEach(function(r) { grouped[r.rashi] = []; });
   grouped["Others"] = [];
 
-  filtered.forEach(function(r) {
+  localNames.forEach(function(r) {
     var name   = r.name   ? r.name.trim()   : "";
     var by     = r.by     ? r.by.trim()     : "Unknown";
     var reason = r.reason ? r.reason.trim() : "";
@@ -534,6 +447,5 @@ function loadNames() {
 }
 
 // ── Init ──
-initGenderSlider();
 loadNames();
 setInterval(loadNames, 20000);
