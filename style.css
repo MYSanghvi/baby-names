@@ -284,7 +284,7 @@ box-shadow: 0 2px 10px rgba(125,183,239,0.28);
 .stats-section { max-width: 900px; margin: 0 auto 20px; position: relative; z-index: 1; }
 .stats-title {
 text-align: center;
-font-size: 0.82rem;
+font-size: 1.5rem;
 color: #6d88aa;
 margin-bottom: 10px;
 text-transform: uppercase;
