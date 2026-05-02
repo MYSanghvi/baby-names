@@ -1,4 +1,4 @@
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbwW3tFovjuVxCUoHawfrfY3FQPJVyzcqShE4yNh8CHQ6meFqOoKns_7sxTqwIwVnnTgtA/exec";
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbzQkzOPbinEMFjvkVRumkgV8_H0CDtj4hLTzLExeazYLBFT0A6HJSybtEaNlOPnlNbC/exec";
 
 const RASHI_MAP = [
   { rashi: "મેષ ♈ (Aries)", sortLetters: ["A","L","I","E"], displayEng: "A, L, I, E", displayGuj: "અ, લ, ઇ" },
@@ -28,6 +28,7 @@ const submitterColors = {};
 let colorIndex = 0;
 let localNames = [];
 let msgInterval = null;
+let isSubmitting = false;
 let activeRashiFilterMode = "virgo";
 let selectedRashiFilters = [];
 
@@ -111,13 +112,57 @@ function feedback(type) {
 function getVoted() {
   try { return JSON.parse(localStorage.getItem("babyVoted") || "{}"); } catch(e) { return {}; }
 }
-function markVoted(name) {
+function markVoted(username, name, direction) {
   var v = getVoted();
-  v[name.toLowerCase()] = true;
+  var key = (username || "").trim().toLowerCase();
+  var nameKey = (name || "").trim().toLowerCase();
+  if (!key) return;
+  if (!v[key]) v[key] = {};
+  if (direction) {
+    v[key][nameKey] = direction;
+  } else {
+    delete v[key][nameKey];
+  }
   localStorage.setItem("babyVoted", JSON.stringify(v));
+
+  var entry = getNameEntry(name);
+  if (entry) {
+    if (!entry.voteLog) entry.voteLog = {};
+    if (direction) {
+      entry.voteLog[key] = direction;
+    } else {
+      delete entry.voteLog[key];
+    }
+  }
 }
-function hasVoted(name) {
-  return !!getVoted()[name.toLowerCase()];
+function getVoteDirection(username, name) {
+  var key = (username || "").trim().toLowerCase();
+  var nameKey = (name || "").trim().toLowerCase();
+  var entry = getNameEntry(name);
+  if (entry && entry.voteLog && entry.voteLog[key]) return entry.voteLog[key];
+
+  var v = getVoted();
+  return v[key] && v[key][nameKey] ? v[key][nameKey] : null;
+}
+function hasVoted(username, name) {
+  return !!getVoteDirection(username, name);
+}
+
+function getNameEntry(name) {
+  var nameKey = (name || "").trim().toLowerCase();
+  return localNames.find(function(n) {
+    return String(n.name || "").trim().toLowerCase() === nameKey;
+  });
+}
+
+function normalizeVoteLog(raw) {
+  if (!raw) return {};
+  if (typeof raw === "object") return raw;
+  try {
+    return JSON.parse(raw);
+  } catch(e) {
+    return {};
+  }
 }
 
 const funnyMessages = [
@@ -177,10 +222,6 @@ function getRashi(name) {
     if (RASHI_MAP[i].sortLetters.indexOf(firstLetter) !== -1) return RASHI_MAP[i].rashi;
   }
   return "Others";
-}
-
-function genderEmoji(g) {
-  return "";
 }
 
 function normalizeRashiLabel(rashi) {
@@ -252,69 +293,139 @@ function renderRashiFilters() {
   });
 }
 
+function setSubmitProcessing(isProcessing) {
+  isSubmitting = isProcessing;
+  var submitButton = document.querySelector('button[onclick="submitName()"]');
+  if (!submitButton) return;
+  submitButton.disabled = isProcessing;
+  submitButton.textContent = isProcessing ? "Submitting..." : "Submit Name";
+}
+
 function showFunnyMessages() {
   var msg = document.getElementById("msg");
   var i = Math.floor(Math.random() * funnyMessages.length);
   msg.textContent = funnyMessages[i];
   msg.className = "msg loading";
+  showToast(funnyMessages[i], "loading", 2400);
   msgInterval = setInterval(function() {
     i = (i + 1) % funnyMessages.length;
     msg.textContent = funnyMessages[i];
+    showToast(funnyMessages[i], "loading", 2400);
   }, 1800);
 }
 function stopFunnyMessages() {
   if (msgInterval) { clearInterval(msgInterval); msgInterval = null; }
 }
 
-function castVote(nameStr) {
+function showToast(message, type, duration) {
+  var toast = document.getElementById("toast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "toast";
+    toast.setAttribute("role", "status");
+    toast.setAttribute("aria-live", "polite");
+    document.body.appendChild(toast);
+  }
+
+  toast.textContent = message;
+  toast.className = "toast show " + (type || "");
+
+  clearTimeout(showToast.timer);
+  if (duration !== 0) {
+    showToast.timer = setTimeout(function() {
+      toast.className = "toast " + (type || "");
+    }, duration || 3600);
+  }
+}
+
+function castVote(nameStr, direction) {
   var voter = document.getElementById("userName").value.trim();
   var msg = document.getElementById("msg");
-  var userField = document.getElementById("userName");
 
   if (!voter) {
-    var prev = msg.textContent;
-    var prevClass = msg.className;
-    msg.textContent = "✋ Enter your name at the top before voting!";
-    msg.className = "msg error";
+    showToast("✋ Please enter your name to vote", "error");
     feedback("error");
-    userField.focus();
-    setTimeout(function() {
-      if (msg.textContent === "✋ Enter your name at the top before voting!") {
-        msg.textContent = prev;
-        msg.className = prevClass;
-      }
-    }, 3000);
     return;
   }
 
-  if (hasVoted(nameStr)) return;
+  var voteState = getVoteDirection(voter, nameStr);
+  var entry = getNameEntry(nameStr);
 
-  markVoted(nameStr);
+  if (!entry) {
+    msg.textContent = "Name not found";
+    msg.className = "msg error";
+    setTimeout(function() {
+      msg.textContent = "";
+      msg.className = "";
+    }, 2000);
+    return;
+  }
+
+  if (voteState === direction) {
+    entry.votes += (direction === "up" ? -1 : 1);
+    markVoted(voter, nameStr, null);
+    msg.textContent = direction === "up" ? "👍 Upvote removed." : "👎 Downvote removed.";
+    msg.className = "msg success";
+  } else if (voteState) {
+    // Change existing vote
+    var prevDelta = voteState === "up" ? 1 : -1;
+    var newDelta = direction === "up" ? 1 : -1;
+    entry.votes += (newDelta - prevDelta);
+    markVoted(voter, nameStr, direction);
+    msg.textContent = direction === "up" ? "👍 Vote changed to up!" : "👎 Vote changed to down!";
+    msg.className = "msg success";
+  } else {
+    // New vote
+    entry.votes += (direction === "up" ? 1 : -1);
+    markVoted(voter, nameStr, direction);
+    msg.textContent = direction === "up" ? "👍 Voted up!" : "👎 Voted down!";
+    msg.className = "msg success";
+  }
+
   feedback("vote");
-
-  var entry = localNames.find(function(n) {
-    return n.name.toLowerCase() === nameStr.toLowerCase();
-  });
-  if (entry) entry.votes = (entry.votes || 0) + 1;
   renderNames();
 
-  var url = SHEET_URL
-    + "?action=vote"
-    + "&voter=" + encodeURIComponent(voter)
-    + "&nameVotedFor=" + encodeURIComponent(nameStr);
+  // Send to backend
+  var url = SHEET_URL + "?action=vote&voter=" + encodeURIComponent(voter) + 
+            "&nameVotedFor=" + encodeURIComponent(nameStr) + 
+            "&direction=" + encodeURIComponent(direction);
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      if (!data || data.result !== "success") {
+        showToast((data && data.message) || "Vote sync failed. Refreshing votes.", "error");
+        loadNames();
+        return;
+      }
+      if (typeof data.score !== "undefined") entry.votes = Number(data.score || 0);
+      if (data.voteLog) entry.voteLog = normalizeVoteLog(data.voteLog);
+      renderNames();
+    })
+    .catch(function(err) {
+      console.error("Vote sync failed:", err);
+      showToast("Vote sync failed. Refreshing votes.", "error");
+      loadNames();
+    });
 
-  fetch(url).catch(function() { setTimeout(function() { fetch(url); }, 3000); });
+  setTimeout(function() {
+    msg.textContent = "";
+    msg.className = "";
+  }, 2000);
 }
 
 function submitName() {
+  if (isSubmitting) return;
+
   var userName = document.getElementById("userName").value.trim();
   var babyName = document.getElementById("babyName").value.trim();
   var nameReason = document.getElementById("nameReason").value.trim();
   var msg = document.getElementById("msg");
 
   if (!userName || !babyName) {
-    msg.textContent = "We need at least your name and a baby name!";
+    var requiredMessage = "We need at least your name and a baby name!";
+    msg.textContent = requiredMessage;
     msg.className = "msg error";
+    showToast(requiredMessage, "error");
     feedback("error");
     return;
   }
@@ -323,8 +434,10 @@ function submitName() {
     return n.name.toLowerCase() === babyName.toLowerCase();
   });
   if (isDuplicate) {
-    msg.textContent = babyName + " is already in the Sanctuary! Try another.";
+    var duplicateMessage = babyName + " is already in the Sanctuary! Try another.";
+    msg.textContent = duplicateMessage;
     msg.className = "msg error";
+    showToast(duplicateMessage, "error");
     feedback("error");
     return;
   }
@@ -339,7 +452,10 @@ function submitName() {
     warnEl.style.display = "none";
   }
 
-  localNames.push({ name: babyName, by: userName, reason: nameReason, gender: "Either", votes: 0 });
+  setSubmitProcessing(true);
+
+  var optimisticName = { name: babyName, by: userName, reason: nameReason, gender: "Either", votes: 0, voteLog: {} };
+  localNames.push(optimisticName);
   document.getElementById("babyName").value = "";
   document.getElementById("nameReason").value = "";
   renderNames();
@@ -352,16 +468,33 @@ function submitName() {
     + "&reason=" + encodeURIComponent(nameReason)
     + "&gender=" + encodeURIComponent("Either");
 
-  fetch(url).then(function() {
+  fetch(url).then(function(r) {
+    return r.json();
+  }).then(function(data) {
     stopFunnyMessages();
-    feedback("submit");
-    msg.textContent = babyName + " has entered the Sanctuary! Got another one?";
+    setSubmitProcessing(false);
+    if (data && data.result === "error") {
+      localNames = localNames.filter(function(n) { return n !== optimisticName; });
+      renderNames();
+      msg.textContent = data.message || "Could not save this name. Try another.";
+      msg.className = "msg error";
+      showToast(msg.textContent, "error");
+      feedback("error");
+      return;
+    }
+    var successMessage = babyName + " has entered the Sanctuary! Got another one?";
+    msg.textContent = successMessage;
     msg.className = "msg success";
+    showToast(successMessage, "success", 4800);
+    feedback("submit");
   }).catch(function() {
     setTimeout(function() { fetch(url); }, 3000);
     stopFunnyMessages();
-    msg.textContent = babyName + " saved! Add another name below.";
+    setSubmitProcessing(false);
+    var offlineMessage = babyName + " saved! Add another name below.";
+    msg.textContent = offlineMessage;
     msg.className = "msg success";
+    showToast(offlineMessage, "success", 4800);
   });
 }
 
@@ -411,21 +544,25 @@ function renderNames() {
     var titleInfo = RASHI_MAP.find(function(x) { return x.rashi === group.rashi; });
     var letters = titleInfo ? '<span class="rashi-letters-inline">[' + titleInfo.displayEng + ' / ' + titleInfo.displayGuj + ']</span>' : '';
     var cards = group.items.map(function(item) {
-      var votedClass = hasVoted(item.name) ? "voted" : "";
+      var voter = document.getElementById("userName") ? document.getElementById("userName").value.trim() : "";
+      var voteState = getVoteDirection(voter, item.name);
       var color = getColor(item.by || "Unknown");
       var reasonHtml = item.reason ? '<div class="reason">' + item.reason + '</div>' : '';
       return '<div class="name-card">'
         + '<div class="name-header" style="background:' + color + ';">'
         + '<span>' + item.name + '</span>'
-        + '<span>' + (item.votes || 0) + ' votes</span>'
+        + '<span>' + (item.votes || 0) + ' score</span>'
         + '</div>'
         + '<div class="name-meta">'
         + '<div class="by">By: ' + (item.by || "Unknown") + '</div>'
         + reasonHtml
         + '</div>'
         + '<div class="vote-row">'
-        + '<div class="vote-count">Votes: ' + (item.votes || 0) + '</div>'
-        + '<button class="vote-btn ' + votedClass + '" ' + (hasVoted(item.name) ? 'disabled' : '') + ' onclick="castVote(\'' + item.name.replace(/'/g, "\\'") + '\')">Vote</button>'
+        + '<div class="vote-count">Score: ' + (item.votes || 0) + '</div>'
+        + '<div class="vote-actions">'
+        + '<button class="vote-btn up ' + (voteState === "up" ? "voted" : "") + '" onclick="castVote(\'' + item.name.replace(/'/g, "\\'") + '\', \'up\')">👍</button>'
+        + '<button class="vote-btn down ' + (voteState === "down" ? "voted" : "") + '" onclick="castVote(\'' + item.name.replace(/'/g, "\\'") + '\', \'down\')">👎</button>'
+        + '</div>'
         + '</div>'
         + '</div>';
     }).join("");
@@ -452,7 +589,8 @@ function loadNames() {
           by: n.by,
           reason: n.reason || "",
           gender: n.gender || "Either",
-          votes: Number(n.votes || 0)
+          votes: Number(n.votes || 0),
+          voteLog: normalizeVoteLog(n.voteLog)
         };
       });
       renderNames();
@@ -469,6 +607,7 @@ document.addEventListener("DOMContentLoaded", function() {
   var reason = document.getElementById("nameReason");
 
   if (user) user.addEventListener("keydown", function(e) { if (e.key === "Enter") baby && baby.focus(); });
+  if (user) user.addEventListener("input", renderNames);
   if (baby) baby.addEventListener("keydown", function(e) { if (e.key === "Enter") reason && reason.focus(); });
   if (reason) reason.addEventListener("keydown", function(e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitName(); } });
 
