@@ -165,6 +165,26 @@ function normalizeVoteLog(raw) {
   }
 }
 
+function parseNameSuggestions(value) {
+  var seen = {};
+  return String(value || "")
+    .split(",")
+    .map(function(name) { return name.trim(); })
+    .filter(function(name) {
+      var key = name.toLowerCase();
+      if (!key || seen[key]) return false;
+      seen[key] = true;
+      return true;
+    });
+}
+
+function formatNameList(names) {
+  if (!names.length) return "";
+  if (names.length === 1) return names[0];
+  if (names.length === 2) return names[0] + " and " + names[1];
+  return names.slice(0, -1).join(", ") + ", and " + names[names.length - 1];
+}
+
 const funnyMessages = [
   "🕐 Asking the stars for approval...",
   "🪐 Consulting Jupiter about this name...",
@@ -417,12 +437,13 @@ function submitName() {
   if (isSubmitting) return;
 
   var userName = document.getElementById("userName").value.trim();
-  var babyName = document.getElementById("babyName").value.trim();
+  var babyNameInput = document.getElementById("babyName").value.trim();
+  var babyNames = parseNameSuggestions(babyNameInput);
   var nameReason = document.getElementById("nameReason").value.trim();
   var msg = document.getElementById("msg");
 
-  if (!userName || !babyName) {
-    var requiredMessage = "We need at least your name and a baby name!";
+  if (!userName || !babyNames.length) {
+    var requiredMessage = "We need at least your name and one baby name!";
     msg.textContent = requiredMessage;
     msg.className = "msg error";
     showToast(requiredMessage, "error");
@@ -430,11 +451,17 @@ function submitName() {
     return;
   }
 
-  var isDuplicate = localNames.some(function(n) {
-    return n.name.toLowerCase() === babyName.toLowerCase();
+  var duplicateNames = babyNames.filter(function(name) {
+    return localNames.some(function(n) {
+      return String(n.name || "").trim().toLowerCase() === name.toLowerCase();
+    });
   });
-  if (isDuplicate) {
-    var duplicateMessage = babyName + " is already in the Sanctuary! Try another.";
+  var namesToSubmit = babyNames.filter(function(name) {
+    return duplicateNames.indexOf(name) === -1;
+  });
+
+  if (!namesToSubmit.length) {
+    var duplicateMessage = formatNameList(duplicateNames) + " " + (duplicateNames.length === 1 ? "is" : "are") + " already in the Sanctuary! Try another.";
     msg.textContent = duplicateMessage;
     msg.className = "msg error";
     showToast(duplicateMessage, "error");
@@ -443,9 +470,9 @@ function submitName() {
   }
 
   var warnEl = document.getElementById("panditjiWarning");
-  var reviewPrefix = getPanditjiPrefix(babyName);
-  if (reviewPrefix) {
-    warnEl.innerHTML = "⚠️ **" + babyName + "** starts with **" + reviewPrefix + "** — under review by panditji, placed under Others for now.";
+  var reviewNames = namesToSubmit.filter(function(name) { return !!getPanditjiPrefix(name); });
+  if (reviewNames.length) {
+    warnEl.textContent = "⚠️ " + formatNameList(reviewNames) + " will be placed under Others for panditji review.";
     warnEl.style.display = "block";
     setTimeout(function() { warnEl.style.display = "none"; }, 7000);
   } else {
@@ -454,47 +481,75 @@ function submitName() {
 
   setSubmitProcessing(true);
 
-  var optimisticName = { name: babyName, by: userName, reason: nameReason, gender: "Either", votes: 0, voteLog: {} };
-  localNames.push(optimisticName);
+  var optimisticNames = namesToSubmit.map(function(name) {
+    return { name: name, by: userName, reason: nameReason, gender: "Either", votes: 0, voteLog: {} };
+  });
+  optimisticNames.forEach(function(item) { localNames.push(item); });
   document.getElementById("babyName").value = "";
   document.getElementById("nameReason").value = "";
   renderNames();
   showFunnyMessages();
 
-  var url = SHEET_URL
-    + "?action=submit"
-    + "&submittedBy=" + encodeURIComponent(userName)
-    + "&name=" + encodeURIComponent(babyName)
-    + "&reason=" + encodeURIComponent(nameReason)
-    + "&gender=" + encodeURIComponent("Either");
+  var savedNames = [];
+  var failedNames = [];
 
-  fetch(url).then(function(r) {
-    return r.json();
-  }).then(function(data) {
+  function submitNext(index) {
+    if (index >= namesToSubmit.length) return Promise.resolve();
+
+    var name = namesToSubmit[index];
+    var url = SHEET_URL
+      + "?action=submit"
+      + "&submittedBy=" + encodeURIComponent(userName)
+      + "&name=" + encodeURIComponent(name)
+      + "&reason=" + encodeURIComponent(nameReason)
+      + "&gender=" + encodeURIComponent("Either");
+
+    return fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        if (data && data.result === "error") {
+          failedNames.push(name);
+          localNames = localNames.filter(function(n) {
+            return n !== optimisticNames[index];
+          });
+        } else {
+          savedNames.push(name);
+        }
+      })
+      .catch(function() {
+        setTimeout(function() { fetch(url); }, 3000);
+        savedNames.push(name);
+      })
+      .then(function() {
+        return submitNext(index + 1);
+      });
+  }
+
+  submitNext(0).then(function() {
     stopFunnyMessages();
     setSubmitProcessing(false);
-    if (data && data.result === "error") {
-      localNames = localNames.filter(function(n) { return n !== optimisticName; });
-      renderNames();
-      msg.textContent = data.message || "Could not save this name. Try another.";
-      msg.className = "msg error";
-      showToast(msg.textContent, "error");
-      feedback("error");
+    renderNames();
+
+    if (savedNames.length) {
+      var successMessage = formatNameList(savedNames) + " " + (savedNames.length === 1 ? "has" : "have") + " entered the Sanctuary! Got another one?";
+      if (duplicateNames.length) {
+        successMessage += " " + formatNameList(duplicateNames) + " already " + (duplicateNames.length === 1 ? "exists" : "exist") + ", so " + (duplicateNames.length === 1 ? "it was" : "they were") + " skipped.";
+      }
+      if (failedNames.length) {
+        successMessage += " " + formatNameList(failedNames) + " could not be saved.";
+      }
+      msg.textContent = successMessage;
+      msg.className = "msg success";
+      showToast(successMessage, "success", 5200);
+      feedback("submit");
       return;
     }
-    var successMessage = babyName + " has entered the Sanctuary! Got another one?";
-    msg.textContent = successMessage;
-    msg.className = "msg success";
-    showToast(successMessage, "success", 4800);
-    feedback("submit");
-  }).catch(function() {
-    setTimeout(function() { fetch(url); }, 3000);
-    stopFunnyMessages();
-    setSubmitProcessing(false);
-    var offlineMessage = babyName + " saved! Add another name below.";
-    msg.textContent = offlineMessage;
-    msg.className = "msg success";
-    showToast(offlineMessage, "success", 4800);
+
+    var failedMessage = formatNameList(failedNames) + " could not be saved. Try another.";
+    msg.textContent = failedMessage;
+    msg.className = "msg error";
+    showToast(failedMessage, "error");
+    feedback("error");
   });
 }
 
