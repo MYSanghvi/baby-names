@@ -185,6 +185,10 @@ function formatNameList(names) {
   return names.slice(0, -1).join(", ") + ", and " + names[names.length - 1];
 }
 
+function isSelectedName(name) {
+  return String(name || "").trim().toLowerCase() === "pratharv";
+}
+
 const funnyMessages = [
   "🕐 Asking the stars for approval...",
   "🪐 Consulting Jupiter about this name...",
@@ -603,11 +607,14 @@ function renderNames() {
       var voteState = getVoteDirection(voter, item.name);
       var color = getColor(item.by || "Unknown");
       var reasonHtml = item.reason ? '<div class="reason">' + item.reason + '</div>' : '';
-      return '<div class="name-card">'
+      var selectedClass = isSelectedName(item.name) ? " selected-name" : "";
+      var selectedBadge = isSelectedName(item.name) ? '<div class="selected-badge">Selected Name</div>' : '';
+      return '<div class="name-card' + selectedClass + '">'
         + '<div class="name-header" style="background:' + color + ';">'
         + '<span>' + item.name + '</span>'
         + '<span>' + (item.votes || 0) + ' score</span>'
         + '</div>'
+        + selectedBadge
         + '<div class="name-meta">'
         + '<div class="by">By: ' + (item.by || "Unknown") + '</div>'
         + reasonHtml
@@ -656,6 +663,61 @@ function loadNames() {
     });
 }
 
+function launchConfetti() {
+  var layer = document.getElementById("confettiLayer");
+  if (!layer) return;
+
+  var colors = ["#e07898", "#6aace0", "#7ac8a8", "#f0c85f", "#b090d8", "#f28c65"];
+  layer.innerHTML = "";
+
+  for (var i = 0; i < 120; i++) {
+    var piece = document.createElement("span");
+    var angle = Math.random() * Math.PI * 2;
+    var distance = 120 + Math.random() * 420;
+    var x = Math.cos(angle) * distance;
+    var y = Math.sin(angle) * distance + 220;
+    piece.style.left = (45 + Math.random() * 10) + "vw";
+    piece.style.top = "18vh";
+    piece.style.background = colors[i % colors.length];
+    piece.style.setProperty("--x", x + "px");
+    piece.style.setProperty("--y", y + "px");
+    piece.style.setProperty("--r", (Math.random() * 720 - 360) + "deg");
+    piece.style.animationDelay = (Math.random() * 0.18) + "s";
+    piece.style.animationDuration = (1.8 + Math.random() * 0.9) + "s";
+    layer.appendChild(piece);
+  }
+
+  setTimeout(function() {
+    layer.innerHTML = "";
+  }, 3200);
+}
+
+function closeWinnerPopup() {
+  var popup = document.getElementById("winnerPopup");
+  if (popup) popup.classList.add("hidden");
+}
+
+function setupWinnerPopup() {
+  var popup = document.getElementById("winnerPopup");
+  var exploreBtn = document.getElementById("exploreSubmissions");
+  if (!popup) return;
+
+  popup.classList.add("show");
+  launchConfetti();
+
+  if (exploreBtn) {
+    exploreBtn.addEventListener("click", function() {
+      closeWinnerPopup();
+      var namesList = document.getElementById("namesList");
+      if (namesList) namesList.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  }
+
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "Escape") closeWinnerPopup();
+  });
+}
+
 document.addEventListener("DOMContentLoaded", function() {
   var user = document.getElementById("userName");
   var baby = document.getElementById("babyName");
@@ -666,5 +728,6 @@ document.addEventListener("DOMContentLoaded", function() {
   if (baby) baby.addEventListener("keydown", function(e) { if (e.key === "Enter") reason && reason.focus(); });
   if (reason) reason.addEventListener("keydown", function(e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); submitName(); } });
 
+  setupWinnerPopup();
   loadNames();
 });

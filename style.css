@@ -283,6 +283,24 @@ button[onclick="submitName()"]:disabled {
   vertical-align: top;
   width: 180px;
   box-shadow: 0 5px 14px rgba(45,96,170,0.14);
+  position: relative;
+}
+.name-card.selected-name {
+  width: 210px;
+  border: 3px solid #f0c85f;
+  box-shadow: 0 0 0 5px rgba(240,200,95,0.22), 0 12px 28px rgba(45,96,170,0.24);
+  transform: translateY(-2px);
+}
+.selected-badge {
+  background: #fff5ce;
+  color: #7a5600;
+  border-bottom: 1px solid #efd37b;
+  padding: 7px 10px;
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
 }
 .name-card .name-header {
   padding: 8px 14px;
@@ -347,6 +365,140 @@ button[onclick="submitName()"]:disabled {
   font-weight: 700;
   position: relative;
   z-index: 1;
+}
+
+.winner-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 30;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(22,50,82,0.44);
+  backdrop-filter: blur(6px);
+}
+.winner-popup.show { display: flex; }
+.winner-popup.hidden { display: none; }
+.winner-card {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: calc(100vh - 40px);
+  padding: 38px 30px 28px;
+  border-radius: 24px;
+  background: #ffffff;
+  border: 2px solid #cfe2f7;
+  box-shadow: 0 24px 60px rgba(22,50,82,0.28);
+  text-align: center;
+  color: #163252;
+  overflow-y: auto;
+}
+.winner-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 8px;
+  background: linear-gradient(90deg, #e07898, #f0c85f, #7ac8a8, #6aace0, #b090d8);
+}
+.winner-kicker {
+  margin-bottom: 10px;
+  color: #52759f;
+  font-size: 0.86rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+}
+.winner-card h2 {
+  display: block;
+  width: 100%;
+  margin-bottom: 8px;
+  color: #245899;
+  font-size: 1.45rem;
+  line-height: 1.25;
+  text-align: center;
+}
+.winner-name {
+  margin: 6px 0 10px;
+  color: #163252;
+  font-size: clamp(2.4rem, 10vw, 4.4rem);
+  line-height: 1;
+  font-weight: 900;
+}
+.winner-card p {
+  color: #3c5d84;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+.winner-card strong { color: #245899; }
+.winner-details {
+  margin: 20px auto 0;
+  width: 100%;
+  border: 2px solid #d8e9fa;
+  border-radius: 16px;
+  background: #f7fbff;
+  overflow: hidden;
+}
+.winner-details summary {
+  padding: 13px 16px;
+  color: #245899;
+  font-weight: 900;
+  cursor: pointer;
+  text-align: center;
+  list-style-position: inside;
+}
+.winner-details-content {
+  padding: 0 18px 18px;
+  text-align: center;
+}
+.winner-details-content p {
+  margin-top: 12px;
+  font-size: 0.94rem;
+  line-height: 1.58;
+}
+.winner-details-content h3 {
+  margin-top: 16px;
+  color: #245899;
+  font-size: 1rem;
+  line-height: 1.35;
+  font-weight: 900;
+}
+.winner-action {
+  margin-top: 22px;
+  padding: 12px 18px;
+  border: 0;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #4f86cc, #295fa9);
+  color: #fff;
+  font-family: 'Nunito', 'Segoe UI', sans-serif;
+  font-size: 0.98rem;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 7px 18px rgba(45,96,170,0.28);
+}
+.confetti-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+  overflow: hidden;
+}
+.confetti-layer span {
+  position: absolute;
+  width: 9px;
+  height: 16px;
+  border-radius: 3px;
+  opacity: 0;
+  animation: confettiBlast 2.2s ease-out forwards;
+}
+@keyframes confettiBlast {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--x), var(--y)) rotate(var(--r)) scale(0.92);
+  }
 }
 
 .hero-banner {
